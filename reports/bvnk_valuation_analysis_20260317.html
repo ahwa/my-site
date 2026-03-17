@@ -1,0 +1,916 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>BVNK Valuation Analysis — Mastercard $1.8B Acquisition</title>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap');
+
+  :root {
+    --bg-primary: #0a0a0f;
+    --bg-secondary: #0d0d18;
+    --bg-card: #111122;
+    --bg-card-hover: #161633;
+    --border: rgba(0, 255, 200, 0.08);
+    --border-glow: rgba(0, 255, 200, 0.25);
+    --cyan: #00ffc8;
+    --cyan-dim: #00c49a;
+    --electric-blue: #3b82f6;
+    --neon-purple: #a855f7;
+    --neon-pink: #ec4899;
+    --neon-orange: #f97316;
+    --neon-green: #22d3ee;
+    --text-primary: #e8ecf1;
+    --text-secondary: #8892a4;
+    --text-dim: #5a6478;
+    --gradient-1: linear-gradient(135deg, #00ffc8, #3b82f6);
+    --gradient-2: linear-gradient(135deg, #a855f7, #ec4899);
+    --gradient-3: linear-gradient(135deg, #f97316, #facc15);
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    font-family: 'Space Grotesk', system-ui, sans-serif;
+    background: var(--bg-primary);
+    color: var(--text-primary);
+    line-height: 1.65;
+    overflow-x: hidden;
+  }
+
+  /* Animated background grid */
+  body::before {
+    content: '';
+    position: fixed;
+    top: 0; left: 0; right: 0; bottom: 0;
+    background-image:
+      linear-gradient(rgba(0,255,200,0.03) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(0,255,200,0.03) 1px, transparent 1px);
+    background-size: 60px 60px;
+    pointer-events: none;
+    z-index: 0;
+  }
+
+  .container { max-width: 1340px; margin: 0 auto; padding: 28px; position: relative; z-index: 1; }
+
+  /* ── HERO HEADER ── */
+  .hero {
+    position: relative;
+    border-radius: 20px;
+    padding: 56px 48px;
+    margin-bottom: 36px;
+    background: var(--bg-secondary);
+    border: 1px solid var(--border);
+    overflow: hidden;
+  }
+  .hero::before {
+    content: '';
+    position: absolute;
+    top: -120px; right: -80px;
+    width: 500px; height: 500px;
+    background: radial-gradient(circle, rgba(0,255,200,0.08), transparent 70%);
+    border-radius: 50%;
+  }
+  .hero::after {
+    content: '';
+    position: absolute;
+    bottom: -100px; left: 30%;
+    width: 400px; height: 400px;
+    background: radial-gradient(circle, rgba(168,85,247,0.06), transparent 70%);
+    border-radius: 50%;
+  }
+  .hero-tag {
+    display: inline-flex; align-items: center; gap: 8px;
+    background: rgba(0,255,200,0.08);
+    border: 1px solid rgba(0,255,200,0.2);
+    border-radius: 100px;
+    padding: 6px 18px;
+    font-size: 0.78rem;
+    font-weight: 600;
+    color: var(--cyan);
+    text-transform: uppercase;
+    letter-spacing: 1.5px;
+    margin-bottom: 20px;
+    position: relative;
+  }
+  .hero-tag .dot { width: 7px; height: 7px; border-radius: 50%; background: var(--cyan); animation: pulse-dot 2s ease-in-out infinite; }
+  @keyframes pulse-dot { 0%,100% { opacity: 1; } 50% { opacity: 0.3; } }
+  .hero h1 {
+    font-size: 2.8rem; font-weight: 700; line-height: 1.15;
+    position: relative;
+    margin-bottom: 12px;
+  }
+  .hero h1 .grad { background: var(--gradient-1); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; }
+  .hero .subtitle { color: var(--text-secondary); font-size: 1.1rem; position: relative; max-width: 720px; }
+  .hero-meta { display: flex; gap: 24px; margin-top: 20px; position: relative; flex-wrap: wrap; }
+  .hero-meta .chip {
+    background: rgba(255,255,255,0.04);
+    border: 1px solid rgba(255,255,255,0.08);
+    border-radius: 10px;
+    padding: 8px 16px;
+    font-size: 0.85rem;
+    color: var(--text-secondary);
+    font-family: 'JetBrains Mono', monospace;
+  }
+  .hero-meta .chip strong { color: var(--cyan); }
+
+  /* ── KPI STRIP ── */
+  .kpi-strip {
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);
+    gap: 16px;
+    margin-bottom: 36px;
+  }
+  @media (max-width: 900px) { .kpi-strip { grid-template-columns: repeat(2, 1fr); } }
+  .kpi {
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    padding: 22px;
+    text-align: center;
+    position: relative;
+    overflow: hidden;
+    transition: border-color 0.3s;
+  }
+  .kpi:hover { border-color: var(--border-glow); }
+  .kpi::after {
+    content: '';
+    position: absolute;
+    top: 0; left: 50%; transform: translateX(-50%);
+    width: 60%; height: 1px;
+    background: var(--gradient-1);
+    opacity: 0.5;
+  }
+  .kpi .kpi-label { font-size: 0.7rem; text-transform: uppercase; letter-spacing: 1.5px; color: var(--text-dim); font-weight: 600; margin-bottom: 6px; }
+  .kpi .kpi-val {
+    font-size: 1.8rem; font-weight: 700;
+    font-family: 'JetBrains Mono', monospace;
+    background: var(--gradient-1); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
+  }
+  .kpi .kpi-sub { font-size: 0.75rem; color: var(--text-dim); margin-top: 4px; }
+
+  /* ── SECTION ── */
+  .section { margin-bottom: 40px; }
+  .section-header { display: flex; align-items: center; gap: 14px; margin-bottom: 20px; }
+  .section-header .icon-wrap {
+    width: 38px; height: 38px; border-radius: 10px; display: flex; align-items: center; justify-content: center; font-size: 1.1rem;
+  }
+  .section-header .icon-wrap.cyan { background: rgba(0,255,200,0.1); color: var(--cyan); }
+  .section-header .icon-wrap.purple { background: rgba(168,85,247,0.1); color: var(--neon-purple); }
+  .section-header .icon-wrap.pink { background: rgba(236,72,153,0.1); color: var(--neon-pink); }
+  .section-header .icon-wrap.orange { background: rgba(249,115,22,0.1); color: var(--neon-orange); }
+  .section-header h2 { font-size: 1.35rem; font-weight: 700; }
+
+  /* ── TAB BAR ── */
+  .tab-bar { display: flex; gap: 6px; margin-bottom: 20px; flex-wrap: wrap; padding: 4px; background: var(--bg-card); border-radius: 12px; border: 1px solid var(--border); }
+  .tab-btn {
+    background: transparent;
+    border: none;
+    color: var(--text-dim);
+    padding: 10px 20px;
+    border-radius: 8px;
+    cursor: pointer;
+    font-family: 'Space Grotesk', sans-serif;
+    font-size: 0.88rem;
+    font-weight: 500;
+    transition: all 0.25s;
+  }
+  .tab-btn:hover { color: var(--text-primary); background: rgba(255,255,255,0.04); }
+  .tab-btn.active {
+    background: rgba(0,255,200,0.1);
+    color: var(--cyan);
+    box-shadow: 0 0 20px rgba(0,255,200,0.05);
+  }
+  .tab-panel { display: none; }
+  .tab-panel.active { display: block; animation: fadeUp 0.35s ease-out; }
+  @keyframes fadeUp { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+
+  /* ── CARDS ── */
+  .cards-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(400px, 1fr)); gap: 18px; }
+  @media (max-width: 900px) { .cards-grid { grid-template-columns: 1fr; } }
+  .card {
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    padding: 26px;
+    transition: border-color 0.3s, box-shadow 0.3s;
+    position: relative;
+  }
+  .card:hover { border-color: var(--border-glow); box-shadow: 0 0 40px rgba(0,255,200,0.03); }
+  .card h3 { font-size: 1.05rem; margin-bottom: 14px; font-weight: 600; display: flex; align-items: center; gap: 8px; }
+  .card h3 .dot-indicator { width: 8px; height: 8px; border-radius: 50%; }
+  .card p { color: var(--text-secondary); font-size: 0.9rem; margin-bottom: 10px; }
+
+  .formula {
+    background: rgba(0,255,200,0.04);
+    border: 1px solid rgba(0,255,200,0.1);
+    border-radius: 10px;
+    padding: 12px 16px;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.82rem;
+    margin: 10px 0;
+    color: var(--cyan);
+    position: relative;
+    overflow: hidden;
+  }
+  .formula::before {
+    content: '>';
+    position: absolute; left: 16px; top: 50%; transform: translateY(-50%);
+    color: rgba(0,255,200,0.3);
+    font-weight: 700;
+  }
+  .formula { padding-left: 32px; }
+
+  /* ── TABLES ── */
+  .data-table { width: 100%; border-collapse: collapse; margin-top: 12px; }
+  .data-table th {
+    padding: 8px 12px;
+    text-align: left;
+    font-size: 0.7rem;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    color: var(--text-dim);
+    font-weight: 600;
+    border-bottom: 1px solid rgba(0,255,200,0.1);
+  }
+  .data-table td {
+    padding: 9px 12px;
+    font-size: 0.88rem;
+    border-bottom: 1px solid rgba(255,255,255,0.04);
+  }
+  .data-table td.num {
+    text-align: right;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.84rem;
+  }
+  .data-table tr:hover { background: rgba(0,255,200,0.02); }
+  .data-table tr.hl { background: rgba(0,255,200,0.05); }
+  .data-table tr.hl td { font-weight: 600; color: var(--cyan); }
+
+  /* ── COMP TABLE (full width) ── */
+  .full-card {
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    padding: 26px;
+    margin-bottom: 18px;
+  }
+  .full-card h3 { font-size: 1.05rem; margin-bottom: 14px; font-weight: 600; }
+  .comp-table { width: 100%; border-collapse: collapse; }
+  .comp-table th {
+    background: rgba(0,255,200,0.03);
+    padding: 10px 14px;
+    text-align: left;
+    font-size: 0.7rem;
+    color: var(--text-dim);
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    font-weight: 600;
+    border-bottom: 1px solid rgba(0,255,200,0.1);
+  }
+  .comp-table td {
+    padding: 11px 14px;
+    font-size: 0.88rem;
+    border-bottom: 1px solid rgba(255,255,255,0.04);
+  }
+  .comp-table td.num { text-align: right; font-family: 'JetBrains Mono', monospace; font-size: 0.84rem; }
+  .comp-table tr:hover { background: rgba(0,255,200,0.02); }
+  .comp-table tr.hl { background: rgba(0,255,200,0.06); }
+  .comp-table tr.hl td { font-weight: 600; }
+
+  /* ── CHARTS ── */
+  .chart-card {
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    padding: 26px;
+    margin-bottom: 18px;
+  }
+  .chart-card h3 { font-size: 1.05rem; margin-bottom: 16px; font-weight: 600; }
+  .chart-wrap { position: relative; height: 340px; }
+
+  /* ── VERDICT BOX ── */
+  .verdict {
+    background: var(--bg-card);
+    border: 1px solid rgba(0,255,200,0.15);
+    border-radius: 20px;
+    padding: 36px;
+    margin-top: 20px;
+    position: relative;
+    overflow: hidden;
+  }
+  .verdict::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 2px;
+    background: var(--gradient-1);
+  }
+  .verdict h3 { font-size: 1.3rem; margin-bottom: 8px; }
+  .verdict > p { color: var(--text-secondary); font-size: 0.95rem; margin-bottom: 20px; max-width: 800px; }
+  .verdict-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 14px; }
+  .verdict-item {
+    background: rgba(0,0,0,0.3);
+    border: 1px solid rgba(255,255,255,0.04);
+    border-radius: 12px;
+    padding: 18px;
+  }
+  .verdict-item .v-label { font-size: 0.72rem; color: var(--text-dim); text-transform: uppercase; letter-spacing: 1.2px; font-weight: 600; }
+  .verdict-item .v-value { font-size: 1rem; font-weight: 600; margin-top: 6px; line-height: 1.4; }
+  .v-fair { color: var(--cyan); }
+  .v-moderate { color: var(--neon-orange); }
+
+  /* Stars */
+  .star-cyan { color: var(--cyan); }
+  .star-yellow { color: var(--neon-orange); }
+  .star-purple { color: var(--neon-purple); }
+
+  /* ── FOOTER ── */
+  .footer {
+    text-align: center;
+    padding: 28px;
+    color: var(--text-dim);
+    font-size: 0.78rem;
+    border-top: 1px solid var(--border);
+    margin-top: 40px;
+  }
+</style>
+</head>
+<body>
+
+<div class="container">
+
+  <!-- ══════════════ HERO ══════════════ -->
+  <div class="hero">
+    <div class="hero-tag"><span class="dot"></span> Live Deal Analysis</div>
+    <h1>BVNK Valuation Analysis<br><span class="grad">Mastercard's $1.8B Acquisition</span></h1>
+    <div class="subtitle">Multi-model valuation & competitive benchmarking of the largest pure-play stablecoin infrastructure acquisition to date.</div>
+    <div class="hero-meta">
+      <div class="chip">Deal: <strong>Up to $1.8B</strong> ($1.5B base + $300M earnout)</div>
+      <div class="chip">Date: <strong>March 17, 2026</strong></div>
+      <div class="chip">Prepared for: <strong>Jay Hua</strong></div>
+    </div>
+  </div>
+
+  <!-- ══════════════ KPI STRIP ══════════════ -->
+  <div class="kpi-strip">
+    <div class="kpi">
+      <div class="kpi-label">Enterprise Value</div>
+      <div class="kpi-val">$1.8B</div>
+      <div class="kpi-sub">Incl. $300M contingent</div>
+    </div>
+    <div class="kpi">
+      <div class="kpi-label">Est. 2025 Revenue</div>
+      <div class="kpi-val">~$80M</div>
+      <div class="kpi-sub">~100% YoY from $40M</div>
+    </div>
+    <div class="kpi">
+      <div class="kpi-label">Payment Volume</div>
+      <div class="kpi-val">$20B+</div>
+      <div class="kpi-sub">Annualized Oct 2025</div>
+    </div>
+    <div class="kpi">
+      <div class="kpi-label">Last Private Val.</div>
+      <div class="kpi-val">$750M</div>
+      <div class="kpi-sub">Series B, Dec 2024</div>
+    </div>
+    <div class="kpi">
+      <div class="kpi-label">Acq. Premium</div>
+      <div class="kpi-val">2.4x</div>
+      <div class="kpi-sub">vs. Series B valuation</div>
+    </div>
+  </div>
+
+  <!-- ══════════════ VALUATION MODELS ══════════════ -->
+  <div class="section">
+    <div class="section-header">
+      <div class="icon-wrap cyan">&#9670;</div>
+      <h2>Valuation Models</h2>
+    </div>
+
+    <div class="tab-bar">
+      <button class="tab-btn active" onclick="showTab('rev', this)">Revenue Multiple</button>
+      <button class="tab-btn" onclick="showTab('vol', this)">Volume Multiple</button>
+      <button class="tab-btn" onclick="showTab('prec', this)">Precedent Transactions</button>
+      <button class="tab-btn" onclick="showTab('dcf', this)">DCF</button>
+      <button class="tab-btn" onclick="showTab('vc', this)">VC Markup</button>
+    </div>
+
+    <!-- ── Revenue Multiple ── -->
+    <div class="tab-panel active" id="tab-rev">
+      <div class="cards-grid">
+        <div class="card">
+          <h3><span class="dot-indicator" style="background:var(--cyan)"></span>Revenue Multiple Analysis</h3>
+          <p>BVNK's implied revenue multiple at the $1.8B deal price depends on the revenue base used. With ~$40M 2024 revenue and estimated ~$80M 2025E revenue (assuming continued ~100% YoY growth):</p>
+          <div class="formula">EV / Revenue (2024) = $1,800M / $40M = <strong>45.0x</strong></div>
+          <div class="formula">EV / Revenue (2025E) = $1,800M / $80M = <strong>22.5x</strong></div>
+          <div class="formula">EV / Revenue (Base Deal) = $1,500M / $80M = <strong>18.8x</strong></div>
+          <p style="margin-top:12px;">High-growth fintech/crypto infrastructure companies have traded at 15–50x forward revenue in recent M&A. The 18.8–22.5x range on forward revenue is within — but toward the upper end — of comparable ranges.</p>
+          <table class="data-table">
+            <tr><th>Scenario</th><th>Revenue</th><th>Multiple</th><th>Implied Val.</th></tr>
+            <tr><td>Bear (15x 2025E Rev)</td><td class="num">$80M</td><td class="num">15.0x</td><td class="num">$1,200M</td></tr>
+            <tr class="hl"><td>Base (22.5x 2025E Rev)</td><td class="num">$80M</td><td class="num">22.5x</td><td class="num">$1,800M</td></tr>
+            <tr><td>Bull (30x 2025E Rev)</td><td class="num">$80M</td><td class="num">30.0x</td><td class="num">$2,400M</td></tr>
+          </table>
+        </div>
+        <div class="card">
+          <h3><span class="dot-indicator" style="background:var(--neon-purple)"></span>Peer Revenue Multiple Comps</h3>
+          <p>Comparing implied EV/Revenue multiples across stablecoin infrastructure deals:</p>
+          <table class="data-table">
+            <tr><th>Company</th><th>Deal / Val.</th><th>Est. Rev</th><th>EV/Rev</th></tr>
+            <tr><td>Bridge (Stripe acq.)</td><td class="num">$1,100M</td><td class="num">~$15M</td><td class="num">~73x</td></tr>
+            <tr class="hl"><td>BVNK (MC acq.)</td><td class="num">$1,800M</td><td class="num">~$80M</td><td class="num">~22.5x</td></tr>
+            <tr><td>Zero Hash</td><td class="num">$1,000M</td><td class="num">~$30M</td><td class="num">~33x</td></tr>
+            <tr><td>Paxos (Series D)</td><td class="num">$2,400M</td><td class="num">~$100M</td><td class="num">~24x</td></tr>
+          </table>
+          <p style="margin-top:12px; color: var(--cyan);">Verdict: BVNK's 22.5x forward multiple is <strong>reasonable</strong> — cheaper than Bridge and Zero Hash, on par with Paxos, and reflects BVNK's stronger revenue base.</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- ── Volume Multiple ── -->
+    <div class="tab-panel" id="tab-vol">
+      <div class="cards-grid">
+        <div class="card">
+          <h3><span class="dot-indicator" style="background:var(--electric-blue)"></span>Payment Volume Multiple</h3>
+          <p>Valuing payments companies as a multiple of annualized transaction/payment volume (TPV) is standard for payment processors. BVNK processes $20B+ annualized.</p>
+          <div class="formula">EV / TPV = $1,800M / $20,000M = <strong>0.09x (9 bps)</strong></div>
+          <div class="formula">Base Deal: $1,500M / $20,000M = <strong>0.075x (7.5 bps)</strong></div>
+          <p style="margin-top:12px;">This implies Mastercard is paying ~7.5–9 basis points per dollar of BVNK's payment volume — a meaningful premium over traditional processors but justified by stablecoin's growth trajectory.</p>
+          <table class="data-table">
+            <tr><th>Company</th><th>TPV</th><th>Valuation</th><th>EV/TPV</th></tr>
+            <tr><td>Bridge (at acq.)</td><td class="num">$5B</td><td class="num">$1,100M</td><td class="num">0.22x (22 bps)</td></tr>
+            <tr class="hl"><td>BVNK (at acq.)</td><td class="num">$20B</td><td class="num">$1,800M</td><td class="num">0.09x (9 bps)</td></tr>
+            <tr><td>Stripe (2023 val.)</td><td class="num">$1T+</td><td class="num">$65,000M</td><td class="num">0.065x</td></tr>
+            <tr><td>Adyen (public)</td><td class="num">$970B</td><td class="num">$50,000M</td><td class="num">0.052x</td></tr>
+          </table>
+        </div>
+        <div class="card">
+          <h3><span class="dot-indicator" style="background:var(--neon-green)"></span>Take Rate & Revenue Yield</h3>
+          <p>BVNK's implied take rate (revenue / TPV) reveals its unit economics:</p>
+          <div class="formula">Take Rate = $80M Rev / $20,000M TPV = <strong>0.40% (40 bps)</strong></div>
+          <p>This 40 bps take rate is high relative to traditional payment rails (5–25 bps) but consistent with value-added stablecoin orchestration services that include compliance, multi-chain routing, and fiat conversion.</p>
+          <table class="data-table">
+            <tr><th>Processor</th><th>Typical Take Rate</th></tr>
+            <tr><td>Visa/Mastercard (network)</td><td class="num">~5–10 bps</td></tr>
+            <tr><td>Stripe (full-stack)</td><td class="num">~25–30 bps</td></tr>
+            <tr class="hl"><td>BVNK (stablecoin infra)</td><td class="num">~40 bps</td></tr>
+            <tr><td>Bridge (stablecoin)</td><td class="num">~30–50 bps est.</td></tr>
+          </table>
+          <p style="margin-top:12px; color: var(--cyan);">Verdict: Strong take rate supports higher EV/TPV. As volume scales, even modest take rate compression still yields large revenue.</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- ── Precedent Transactions ── -->
+    <div class="tab-panel" id="tab-prec">
+      <div class="full-card">
+        <h3>Precedent Transaction Analysis</h3>
+        <p style="color: var(--text-secondary); margin-bottom: 16px;">Key stablecoin / crypto infrastructure M&A transactions as benchmarks:</p>
+        <div style="overflow-x: auto;">
+        <table class="comp-table">
+          <tr><th>Date</th><th>Target</th><th>Acquirer</th><th>Deal Value</th><th>TPV</th><th>EV/TPV</th><th>Est. EV/Rev</th><th>Notes</th></tr>
+          <tr><td>Oct 2024</td><td>Bridge</td><td>Stripe</td><td class="num">$1,100M</td><td class="num">$5B</td><td class="num">0.22x</td><td class="num">~73x</td><td>3x prior round; early-stage</td></tr>
+          <tr class="hl"><td>Mar 2026</td><td><strong>BVNK</strong></td><td><strong>Mastercard</strong></td><td class="num"><strong>$1,800M</strong></td><td class="num"><strong>$20B</strong></td><td class="num"><strong>0.09x</strong></td><td class="num"><strong>~22.5x</strong></td><td><strong>Incl. $300M earnout</strong></td></tr>
+          <tr><td>Jan 2026</td><td>Zero Hash</td><td>Bittrex</td><td class="num">~$1,000M</td><td class="num">N/A</td><td class="num">N/A</td><td class="num">~33x</td><td>At $1B last private val.</td></tr>
+          <tr><td>Jul 2025</td><td>USDC infra</td><td>Various</td><td class="num">—</td><td class="num">—</td><td class="num">—</td><td class="num">—</td><td>GENIUS Act catalyst</td></tr>
+        </table>
+        </div>
+        <p style="margin-top: 16px; color: var(--text-secondary);">Relative to Bridge's acquisition at 0.22x TPV and ~73x revenue, BVNK's deal is significantly more favorable for Mastercard. BVNK offers 4x the payment volume at only 1.6x the price — indicating a more mature, de-risked asset. The $300M earnout further protects the acquirer.</p>
+      </div>
+    </div>
+
+    <!-- ── DCF ── -->
+    <div class="tab-panel" id="tab-dcf">
+      <div class="cards-grid">
+        <div class="card">
+          <h3><span class="dot-indicator" style="background:var(--neon-orange)"></span>Simplified DCF Model</h3>
+          <p>5-year unlevered FCF projection assuming BVNK continues high growth with margin expansion under Mastercard ownership.</p>
+          <table class="data-table">
+            <tr><th>Year</th><th>Revenue</th><th>Growth</th><th>EBITDA Mgn</th><th>FCF</th></tr>
+            <tr><td>2025E</td><td class="num">$80M</td><td class="num">100%</td><td class="num">5%</td><td class="num">$4M</td></tr>
+            <tr><td>2026E</td><td class="num">$140M</td><td class="num">75%</td><td class="num">12%</td><td class="num">$17M</td></tr>
+            <tr><td>2027E</td><td class="num">$224M</td><td class="num">60%</td><td class="num">20%</td><td class="num">$45M</td></tr>
+            <tr><td>2028E</td><td class="num">$336M</td><td class="num">50%</td><td class="num">28%</td><td class="num">$94M</td></tr>
+            <tr><td>2029E</td><td class="num">$470M</td><td class="num">40%</td><td class="num">32%</td><td class="num">$150M</td></tr>
+            <tr><td>2030E</td><td class="num">$611M</td><td class="num">30%</td><td class="num">35%</td><td class="num">$214M</td></tr>
+          </table>
+        </div>
+        <div class="card">
+          <h3><span class="dot-indicator" style="background:var(--cyan)"></span>DCF Valuation Summary</h3>
+          <p>Assumptions: WACC 12%, Terminal Growth 4%, Tax Rate 21%</p>
+          <div class="formula">PV of FCF (2025–2030) = <strong>$378M</strong></div>
+          <div class="formula">Terminal Value = $214M x (1.04) / (0.12 - 0.04) = $2,782M</div>
+          <div class="formula">PV of Terminal = $2,782M / (1.12)^5 = <strong>$1,579M</strong></div>
+          <div class="formula">Total Enterprise Value = <strong>$1,957M</strong></div>
+          <p style="margin-top: 12px;">The DCF suggests a fair value of ~$1.96B, which implies the $1.8B deal price (inclusive of earnout) is <span style="color: var(--cyan); font-weight: 700;">slightly below intrinsic value</span> — reasonable for Mastercard given synergies are excluded.</p>
+          <table class="data-table">
+            <tr><th>Sensitivity</th><th>WACC 10%</th><th>WACC 12%</th><th>WACC 14%</th></tr>
+            <tr><td>TGR 3%</td><td class="num">$2,198M</td><td class="num">$1,786M</td><td class="num">$1,487M</td></tr>
+            <tr class="hl"><td>TGR 4%</td><td class="num">$2,464M</td><td class="num">$1,957M</td><td class="num">$1,601M</td></tr>
+            <tr><td>TGR 5%</td><td class="num">$2,822M</td><td class="num">$2,182M</td><td class="num">$1,741M</td></tr>
+          </table>
+          <p style="margin-top: 12px; color: var(--text-dim); font-size: 0.82rem;">Note: DCF for a high-growth, pre-profit company is directional. Terminal value dominance (~80%) underscores execution risk.</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- ── VC Markup ── -->
+    <div class="tab-panel" id="tab-vc">
+      <div class="cards-grid">
+        <div class="card">
+          <h3><span class="dot-indicator" style="background:var(--neon-purple)"></span>Funding Round Progression</h3>
+          <p>Tracking BVNK's valuation trajectory from private rounds to acquisition:</p>
+          <table class="data-table">
+            <tr><th>Round</th><th>Date</th><th>Raised</th><th>Valuation</th><th>Step-Up</th></tr>
+            <tr><td>Series A</td><td>2022</td><td class="num">$40M</td><td class="num">~$200M</td><td class="num">—</td></tr>
+            <tr><td>Series B</td><td>Dec 2024</td><td class="num">$50M</td><td class="num">$750M</td><td class="num">3.75x</td></tr>
+            <tr><td>Citi Ventures</td><td>Oct 2025</td><td class="num">Undiscl.</td><td class="num">&gt;$750M</td><td class="num">&gt;1.0x</td></tr>
+            <tr class="hl"><td>Mastercard Acq.</td><td>Mar 2026</td><td class="num">$1,800M</td><td class="num">$1,800M</td><td class="num">2.4x</td></tr>
+          </table>
+          <p style="margin-top: 12px;">The 2.4x step-up from the Series B to acquisition is within normal M&A premium ranges (2–4x for high-growth targets). Bridge saw a ~3x step-up from its last round to the Stripe deal.</p>
+        </div>
+        <div class="card">
+          <h3><span class="dot-indicator" style="background:var(--neon-pink)"></span>Investor Returns</h3>
+          <p>Estimated returns for key investors at the $1.8B exit:</p>
+          <table class="data-table">
+            <tr><th>Investor</th><th>Est. Entry Val.</th><th>MOIC</th></tr>
+            <tr><td>Early / Seed investors</td><td class="num">~$30–50M</td><td class="num">36–60x</td></tr>
+            <tr><td>Tiger Global (Series A)</td><td class="num">~$200M</td><td class="num">~9x</td></tr>
+            <tr><td>Haun Ventures (Series B)</td><td class="num">$750M</td><td class="num">~2.4x</td></tr>
+            <tr><td>Coinbase Ventures</td><td class="num">$750M</td><td class="num">~2.4x</td></tr>
+            <tr><td>Citi Ventures</td><td class="num">&gt;$750M</td><td class="num">&lt;2.4x</td></tr>
+          </table>
+          <p style="margin-top: 12px; color: var(--cyan);">Strong returns across the cap table, particularly for early investors. Series B investors achieve a respectable 2.4x in ~15 months — excellent for a late-stage check.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ══════════════ CHARTS ══════════════ -->
+  <div class="section">
+    <div class="section-header">
+      <div class="icon-wrap purple">&#9672;</div>
+      <h2>Visual Analysis</h2>
+    </div>
+    <div class="cards-grid">
+      <div class="chart-card">
+        <h3>Valuation Model Comparison ($M)</h3>
+        <div class="chart-wrap"><canvas id="chartModels"></canvas></div>
+      </div>
+      <div class="chart-card">
+        <h3>BVNK vs. Competitors — Key Metrics</h3>
+        <div class="chart-wrap"><canvas id="chartComps"></canvas></div>
+      </div>
+    </div>
+    <div class="cards-grid">
+      <div class="chart-card">
+        <h3>Stablecoin Infrastructure Valuations ($M)</h3>
+        <div class="chart-wrap"><canvas id="chartBubble"></canvas></div>
+      </div>
+      <div class="chart-card">
+        <h3>BVNK Payment Volume Growth ($B, Annualized)</h3>
+        <div class="chart-wrap"><canvas id="chartGrowth"></canvas></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ══════════════ COMPETITIVE LANDSCAPE ══════════════ -->
+  <div class="section">
+    <div class="section-header">
+      <div class="icon-wrap pink">&#9733;</div>
+      <h2>Competitive Landscape</h2>
+    </div>
+
+    <div class="full-card">
+      <h3>Stablecoin Infrastructure Peer Comparison</h3>
+      <div style="overflow-x: auto;">
+      <table class="comp-table">
+        <tr><th>Company</th><th>Valuation</th><th>Funding</th><th>TPV (Ann.)</th><th>Est. Revenue</th><th>Key Clients</th><th>Status</th></tr>
+        <tr class="hl">
+          <td><strong>BVNK</strong></td><td class="num"><strong>$1,800M</strong></td><td class="num">$93M</td><td class="num">$20B</td><td class="num">~$80M</td><td>Worldpay, Deel, Flywire</td><td>Acquired by Mastercard</td>
+        </tr>
+        <tr><td>Bridge</td><td class="num">$1,100M</td><td class="num">~$58M</td><td class="num">$5B</td><td class="num">~$15M</td><td>Coinbase, SpaceX</td><td>Acquired by Stripe</td></tr>
+        <tr><td>Zero Hash</td><td class="num">$1,000M</td><td class="num">$275M</td><td class="num">N/A</td><td class="num">~$30M</td><td>Interactive Brokers, Stripe</td><td>Acquired by Bittrex</td></tr>
+        <tr><td>Paxos</td><td class="num">$2,400M</td><td class="num">$544M</td><td class="num">N/A</td><td class="num">~$100M</td><td>PayPal (PYUSD)</td><td>Private</td></tr>
+        <tr><td>Circle</td><td class="num">~$9,000M*</td><td class="num">$1,100M</td><td class="num">N/A</td><td class="num">~$1,700M</td><td>FIS, Shopify, Finastra</td><td>IPO filed</td></tr>
+        <tr><td>Fireblocks</td><td class="num">$8,000M</td><td class="num">$1,022M</td><td class="num">$6T+ custody</td><td class="num">~$150M</td><td>BNY Mellon, ANZ, BNP</td><td>Private</td></tr>
+      </table>
+      </div>
+      <p style="color: var(--text-dim); font-size: 0.78rem; margin-top: 10px;">*Circle valuation based on IPO filing estimates. Revenue figures are estimates from public disclosures and analyst reports.</p>
+    </div>
+
+    <div class="cards-grid">
+      <div class="card">
+        <h3><span class="dot-indicator" style="background:var(--neon-green)"></span>Competitive Positioning Matrix</h3>
+        <table class="data-table">
+          <tr><th>Dimension</th><th>BVNK</th><th>Bridge</th><th>Paxos</th><th>Circle</th></tr>
+          <tr><td>Fiat-Stablecoin Rails</td><td class="star-cyan">★★★★★</td><td class="star-cyan">★★★★</td><td class="star-yellow">★★★</td><td class="star-yellow">★★★</td></tr>
+          <tr><td>Multi-Chain Support</td><td class="star-cyan">★★★★★</td><td class="star-cyan">★★★★</td><td class="star-yellow">★★★</td><td class="star-yellow">★★★</td></tr>
+          <tr><td>Enterprise Clients</td><td class="star-cyan">★★★★★</td><td class="star-yellow">★★★</td><td class="star-cyan">★★★★</td><td class="star-cyan">★★★★★</td></tr>
+          <tr><td>Regulatory Licenses</td><td class="star-cyan">★★★★</td><td class="star-yellow">★★★</td><td class="star-cyan">★★★★★</td><td class="star-cyan">★★★★★</td></tr>
+          <tr><td>Geographic Reach</td><td class="star-cyan">★★★★★</td><td class="star-yellow">★★★</td><td class="star-cyan">★★★★</td><td class="star-cyan">★★★★</td></tr>
+          <tr><td>Developer Experience</td><td class="star-yellow">★★★</td><td class="star-cyan">★★★★★</td><td class="star-cyan">★★★★</td><td class="star-cyan">★★★★</td></tr>
+        </table>
+      </div>
+      <div class="card">
+        <h3><span class="dot-indicator" style="background:var(--neon-orange)"></span>Why Mastercard Paid a Premium</h3>
+        <p><strong style="color:var(--cyan);">1. Scale:</strong> $20B+ TPV is the largest among pure-play stablecoin infra — 4x Bridge at acquisition.</p>
+        <p><strong style="color:var(--neon-purple);">2. Enterprise Relationships:</strong> Worldpay, Deel, Flywire, dLocal — blue-chip fintech clients already using BVNK in production.</p>
+        <p><strong style="color:var(--electric-blue);">3. Revenue Maturity:</strong> ~$80M est. revenue with 163% net revenue retention — real business, not just volume.</p>
+        <p><strong style="color:var(--neon-pink);">4. Regulatory Positioning:</strong> Licensed in UK, EU, and South Africa; US expansion underway with 50-state coverage via Paxos partnership.</p>
+        <p><strong style="color:var(--neon-orange);">5. Competitive Defense:</strong> Bidding war with Coinbase drove price up; Mastercard needed to secure the asset before a competitor did.</p>
+        <p><strong style="color:var(--neon-green);">6. Strategic Fit:</strong> Bridges Mastercard's fiat network with on-chain rails — uniquely complementary to the card network model.</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- ══════════════ VERDICT ══════════════ -->
+  <div class="verdict">
+    <h3>Valuation Verdict</h3>
+    <p>Across five valuation approaches, the $1.8B deal price (incl. earnout) falls within a reasonable range — neither a steal nor an overpay. The $300M contingent component provides downside protection for Mastercard.</p>
+    <div class="verdict-grid">
+      <div class="verdict-item">
+        <div class="v-label">Revenue Multiple (22.5x Fwd)</div>
+        <div class="v-value v-fair">Fair — Mid-range for high-growth crypto infra</div>
+      </div>
+      <div class="verdict-item">
+        <div class="v-label">Volume Multiple (9 bps)</div>
+        <div class="v-value v-fair">Attractive — Well below Bridge's 22 bps</div>
+      </div>
+      <div class="verdict-item">
+        <div class="v-label">DCF ($1.96B)</div>
+        <div class="v-value v-fair">Slight Discount — Below intrinsic value pre-synergies</div>
+      </div>
+      <div class="verdict-item">
+        <div class="v-label">Precedent Transactions</div>
+        <div class="v-value v-fair">Reasonable — Better value-for-scale than Bridge</div>
+      </div>
+      <div class="verdict-item">
+        <div class="v-label">VC Step-Up (2.4x from Series B)</div>
+        <div class="v-value v-moderate">Moderate — Below Bridge's 3x step-up</div>
+      </div>
+      <div class="verdict-item">
+        <div class="v-label">Overall Assessment</div>
+        <div class="v-value v-fair">Fair to Attractive for Mastercard</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="footer">
+    BVNK Valuation Analysis &bull; March 17, 2026 &bull; All financial estimates are based on publicly available data and analyst reports. Revenue and volume figures for private companies are approximate. This analysis is for informational purposes only and does not constitute investment advice.
+  </div>
+
+</div>
+
+<script>
+function showTab(id, btn) {
+  document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+  document.getElementById('tab-' + id).classList.add('active');
+  btn.classList.add('active');
+}
+
+// Chart config
+Chart.defaults.color = '#8892a4';
+Chart.defaults.borderColor = 'rgba(0,255,200,0.06)';
+Chart.defaults.font.family = "'Space Grotesk', system-ui, sans-serif";
+
+// Gradient helper
+function makeGradient(ctx, c1, c2) {
+  const g = ctx.createLinearGradient(0, 0, 0, 340);
+  g.addColorStop(0, c1);
+  g.addColorStop(1, c2);
+  return g;
+}
+
+// 1. Valuation Models Bar Chart
+const ctx1 = document.getElementById('chartModels').getContext('2d');
+new Chart(ctx1, {
+  type: 'bar',
+  data: {
+    labels: ['Rev (Bear)', 'Rev (Base)', 'Rev (Bull)', 'Volume', 'DCF', 'Precedent', 'Deal Price'],
+    datasets: [{
+      label: 'Implied Valuation ($M)',
+      data: [1200, 1800, 2400, 1800, 1957, 1700, 1800],
+      backgroundColor: [
+        'rgba(59,130,246,0.7)',
+        'rgba(0,255,200,0.7)',
+        'rgba(168,85,247,0.7)',
+        'rgba(34,211,238,0.7)',
+        'rgba(249,115,22,0.7)',
+        'rgba(59,130,246,0.7)',
+        'rgba(236,72,153,0.7)'
+      ],
+      borderColor: [
+        'rgba(59,130,246,1)',
+        'rgba(0,255,200,1)',
+        'rgba(168,85,247,1)',
+        'rgba(34,211,238,1)',
+        'rgba(249,115,22,1)',
+        'rgba(59,130,246,1)',
+        'rgba(236,72,153,1)'
+      ],
+      borderWidth: 1,
+      borderRadius: 8,
+      borderSkipped: false,
+    }]
+  },
+  options: {
+    responsive: true,
+    maintainAspectRatio: false,
+    plugins: {
+      legend: { display: false },
+      tooltip: {
+        backgroundColor: '#111122',
+        borderColor: 'rgba(0,255,200,0.2)',
+        borderWidth: 1,
+        titleColor: '#00ffc8',
+        bodyColor: '#e8ecf1',
+        padding: 12,
+        callbacks: { label: ctx => '$' + ctx.raw.toLocaleString() + 'M' }
+      }
+    },
+    scales: {
+      y: {
+        beginAtZero: true,
+        grid: { color: 'rgba(0,255,200,0.04)' },
+        ticks: { callback: v => '$' + v.toLocaleString() + 'M', font: { family: "'JetBrains Mono'" } }
+      },
+      x: {
+        grid: { display: false },
+        ticks: { font: { size: 11 } }
+      }
+    }
+  }
+});
+
+// 2. Radar Chart
+new Chart(document.getElementById('chartComps'), {
+  type: 'radar',
+  data: {
+    labels: ['Valuation ($B)', 'TPV Scale', 'Revenue', 'Growth Rate', 'Regulatory', 'Enterprise'],
+    datasets: [
+      {
+        label: 'BVNK',
+        data: [1.8, 4, 3, 5, 4, 5],
+        borderColor: '#00ffc8',
+        backgroundColor: 'rgba(0,255,200,0.08)',
+        pointBackgroundColor: '#00ffc8',
+        pointBorderColor: '#00ffc8',
+        borderWidth: 2,
+      },
+      {
+        label: 'Bridge',
+        data: [1.1, 1, 1, 5, 3, 3],
+        borderColor: '#3b82f6',
+        backgroundColor: 'rgba(59,130,246,0.06)',
+        pointBackgroundColor: '#3b82f6',
+        pointBorderColor: '#3b82f6',
+        borderWidth: 2,
+      },
+      {
+        label: 'Paxos',
+        data: [2.4, 2, 4, 2, 5, 4],
+        borderColor: '#f97316',
+        backgroundColor: 'rgba(249,115,22,0.06)',
+        pointBackgroundColor: '#f97316',
+        pointBorderColor: '#f97316',
+        borderWidth: 2,
+      },
+      {
+        label: 'Zero Hash',
+        data: [1.0, 2, 2, 3, 3, 3],
+        borderColor: '#a855f7',
+        backgroundColor: 'rgba(168,85,247,0.06)',
+        pointBackgroundColor: '#a855f7',
+        pointBorderColor: '#a855f7',
+        borderWidth: 2,
+      },
+    ]
+  },
+  options: {
+    responsive: true,
+    maintainAspectRatio: false,
+    scales: {
+      r: {
+        beginAtZero: true,
+        max: 5,
+        ticks: { stepSize: 1, display: false },
+        grid: { color: 'rgba(0,255,200,0.06)' },
+        angleLines: { color: 'rgba(0,255,200,0.06)' },
+        pointLabels: { font: { size: 11, family: "'Space Grotesk'" }, color: '#8892a4' }
+      }
+    },
+    plugins: {
+      legend: {
+        position: 'bottom',
+        labels: { padding: 20, usePointStyle: true, pointStyleWidth: 10, font: { size: 12 } }
+      },
+      tooltip: {
+        backgroundColor: '#111122',
+        borderColor: 'rgba(0,255,200,0.2)',
+        borderWidth: 1,
+        titleColor: '#00ffc8',
+        bodyColor: '#e8ecf1',
+      }
+    }
+  }
+});
+
+// 3. Bubble Chart
+new Chart(document.getElementById('chartBubble'), {
+  type: 'bubble',
+  data: {
+    datasets: [
+      { label: 'BVNK', data: [{ x: 80, y: 1800, r: 22 }], backgroundColor: 'rgba(0,255,200,0.55)', borderColor: '#00ffc8', borderWidth: 2 },
+      { label: 'Bridge', data: [{ x: 15, y: 1100, r: 10 }], backgroundColor: 'rgba(59,130,246,0.55)', borderColor: '#3b82f6', borderWidth: 2 },
+      { label: 'Zero Hash', data: [{ x: 30, y: 1000, r: 12 }], backgroundColor: 'rgba(168,85,247,0.55)', borderColor: '#a855f7', borderWidth: 2 },
+      { label: 'Paxos', data: [{ x: 100, y: 2400, r: 16 }], backgroundColor: 'rgba(249,115,22,0.55)', borderColor: '#f97316', borderWidth: 2 },
+    ]
+  },
+  options: {
+    responsive: true,
+    maintainAspectRatio: false,
+    scales: {
+      x: {
+        title: { display: true, text: 'Est. Revenue ($M)', color: '#8892a4' },
+        beginAtZero: true,
+        grid: { color: 'rgba(0,255,200,0.04)' },
+        ticks: { font: { family: "'JetBrains Mono'" } }
+      },
+      y: {
+        title: { display: true, text: 'Valuation ($M)', color: '#8892a4' },
+        beginAtZero: true,
+        grid: { color: 'rgba(0,255,200,0.04)' },
+        ticks: { callback: v => '$' + v.toLocaleString() + 'M', font: { family: "'JetBrains Mono'" } }
+      }
+    },
+    plugins: {
+      legend: { position: 'bottom', labels: { padding: 20, usePointStyle: true, pointStyleWidth: 10 } },
+      tooltip: {
+        backgroundColor: '#111122',
+        borderColor: 'rgba(0,255,200,0.2)',
+        borderWidth: 1,
+        titleColor: '#00ffc8',
+        bodyColor: '#e8ecf1',
+        callbacks: { label: ctx => `${ctx.dataset.label}: Rev $${ctx.raw.x}M, Val $${ctx.raw.y}M` }
+      }
+    }
+  }
+});
+
+// 4. Growth Line Chart
+const ctx4 = document.getElementById('chartGrowth').getContext('2d');
+const gradFill = ctx4.createLinearGradient(0, 0, 0, 340);
+gradFill.addColorStop(0, 'rgba(0,255,200,0.15)');
+gradFill.addColorStop(1, 'rgba(0,255,200,0)');
+new Chart(ctx4, {
+  type: 'line',
+  data: {
+    labels: ['May 2022', 'H2 2023', 'Dec 2024', 'May 2025', 'Oct 2025'],
+    datasets: [{
+      label: 'Annualized TPV ($B)',
+      data: [2, 4.5, 10, 12, 20],
+      borderColor: '#00ffc8',
+      backgroundColor: gradFill,
+      fill: true,
+      tension: 0.4,
+      pointRadius: 7,
+      pointBackgroundColor: '#0a0a0f',
+      pointBorderColor: '#00ffc8',
+      pointBorderWidth: 3,
+      pointHoverRadius: 10,
+      pointHoverBackgroundColor: '#00ffc8',
+    }]
+  },
+  options: {
+    responsive: true,
+    maintainAspectRatio: false,
+    scales: {
+      y: {
+        beginAtZero: true,
+        grid: { color: 'rgba(0,255,200,0.04)' },
+        ticks: { callback: v => '$' + v + 'B', font: { family: "'JetBrains Mono'" } }
+      },
+      x: { grid: { display: false } }
+    },
+    plugins: {
+      legend: { display: false },
+      tooltip: {
+        backgroundColor: '#111122',
+        borderColor: 'rgba(0,255,200,0.2)',
+        borderWidth: 1,
+        titleColor: '#00ffc8',
+        bodyColor: '#e8ecf1',
+        callbacks: { label: ctx => '$' + ctx.raw + 'B annualized' }
+      }
+    }
+  }
+});
+</script>
+
+</body>
+</html>

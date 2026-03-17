@@ -1,0 +1,1117 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AI Capex Delay & Data Center Buildout Risk — March 2026</title>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap');
+
+  :root {
+    --bg-primary: #0a0e1a;
+    --bg-secondary: #111827;
+    --bg-card: #151c2e;
+    --bg-card-hover: #1a2340;
+    --border: #1e293b;
+    --border-glow: #3b82f620;
+    --text-primary: #e2e8f0;
+    --text-secondary: #94a3b8;
+    --text-muted: #64748b;
+    --accent-blue: #3b82f6;
+    --accent-cyan: #06b6d4;
+    --accent-purple: #8b5cf6;
+    --accent-pink: #ec4899;
+    --accent-amber: #f59e0b;
+    --accent-red: #ef4444;
+    --accent-green: #10b981;
+    --glow-blue: 0 0 20px #3b82f630, 0 0 60px #3b82f610;
+    --glow-cyan: 0 0 20px #06b6d430, 0 0 60px #06b6d410;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    font-family: 'Inter', -apple-system, sans-serif;
+    background: var(--bg-primary);
+    color: var(--text-primary);
+    line-height: 1.7;
+    overflow-x: hidden;
+  }
+
+  /* Animated grid background */
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background:
+      linear-gradient(rgba(59,130,246,0.03) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(59,130,246,0.03) 1px, transparent 1px);
+    background-size: 60px 60px;
+    pointer-events: none;
+    z-index: 0;
+  }
+
+  .container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 24px;
+    position: relative;
+    z-index: 1;
+  }
+
+  /* Hero */
+  .hero {
+    padding: 80px 0 60px;
+    text-align: center;
+    position: relative;
+  }
+  .hero::after {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 600px;
+    height: 600px;
+    background: radial-gradient(circle, rgba(59,130,246,0.08) 0%, transparent 70%);
+    pointer-events: none;
+  }
+  .hero-badge {
+    display: inline-block;
+    padding: 6px 16px;
+    border: 1px solid var(--accent-cyan);
+    border-radius: 100px;
+    font-size: 0.75rem;
+    font-weight: 600;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--accent-cyan);
+    background: rgba(6,182,212,0.08);
+    margin-bottom: 24px;
+  }
+  .hero h1 {
+    font-size: clamp(2rem, 5vw, 3.2rem);
+    font-weight: 800;
+    line-height: 1.15;
+    letter-spacing: -0.03em;
+    background: linear-gradient(135deg, #e2e8f0 0%, #3b82f6 50%, #06b6d4 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    margin-bottom: 20px;
+  }
+  .hero .subtitle {
+    font-size: 1.1rem;
+    color: var(--text-secondary);
+    max-width: 720px;
+    margin: 0 auto 32px;
+  }
+  .hero-meta {
+    display: flex;
+    gap: 24px;
+    justify-content: center;
+    flex-wrap: wrap;
+    font-size: 0.85rem;
+    color: var(--text-muted);
+  }
+  .hero-meta span { display: flex; align-items: center; gap: 6px; }
+  .hero-meta .dot { width: 6px; height: 6px; border-radius: 50%; display: inline-block; }
+  .dot-live { background: var(--accent-green); box-shadow: 0 0 8px var(--accent-green); }
+  .dot-warn { background: var(--accent-amber); box-shadow: 0 0 8px var(--accent-amber); }
+
+  /* Executive Summary */
+  .exec-summary {
+    background: linear-gradient(135deg, rgba(59,130,246,0.06) 0%, rgba(139,92,246,0.06) 100%);
+    border: 1px solid rgba(59,130,246,0.15);
+    border-radius: 16px;
+    padding: 36px 40px;
+    margin-bottom: 48px;
+    position: relative;
+    overflow: hidden;
+  }
+  .exec-summary::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 2px;
+    background: linear-gradient(90deg, var(--accent-blue), var(--accent-cyan), var(--accent-purple));
+  }
+  .exec-summary h2 {
+    font-size: 0.75rem;
+    font-weight: 700;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--accent-cyan);
+    margin-bottom: 16px;
+  }
+  .exec-summary p {
+    font-size: 1.02rem;
+    color: var(--text-secondary);
+    line-height: 1.8;
+  }
+  .exec-summary strong { color: var(--text-primary); }
+
+  /* KPI row */
+  .kpi-row {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    gap: 16px;
+    margin-bottom: 56px;
+  }
+  .kpi-card {
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 24px;
+    text-align: center;
+    transition: border-color 0.3s, box-shadow 0.3s;
+  }
+  .kpi-card:hover {
+    border-color: var(--accent-blue);
+    box-shadow: var(--glow-blue);
+  }
+  .kpi-value {
+    font-size: 2rem;
+    font-weight: 800;
+    font-family: 'JetBrains Mono', monospace;
+    margin-bottom: 4px;
+  }
+  .kpi-label {
+    font-size: 0.8rem;
+    color: var(--text-muted);
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+  }
+  .kpi-blue { color: var(--accent-blue); }
+  .kpi-red { color: var(--accent-red); }
+  .kpi-amber { color: var(--accent-amber); }
+  .kpi-cyan { color: var(--accent-cyan); }
+  .kpi-purple { color: var(--accent-purple); }
+
+  /* Sections */
+  .section {
+    margin-bottom: 56px;
+  }
+  .section-header {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 24px;
+  }
+  .section-number {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.75rem;
+    font-weight: 600;
+    color: var(--accent-cyan);
+    background: rgba(6,182,212,0.1);
+    border: 1px solid rgba(6,182,212,0.2);
+    border-radius: 6px;
+    padding: 4px 10px;
+  }
+  .section h2 {
+    font-size: 1.5rem;
+    font-weight: 700;
+    letter-spacing: -0.02em;
+  }
+  .section p, .section li {
+    color: var(--text-secondary);
+    font-size: 0.95rem;
+    line-height: 1.8;
+  }
+  .section p { margin-bottom: 16px; }
+  .section strong { color: var(--text-primary); }
+  .section ul { list-style: none; padding: 0; margin-bottom: 16px; }
+  .section ul li {
+    padding: 6px 0 6px 20px;
+    position: relative;
+  }
+  .section ul li::before {
+    content: '▸';
+    position: absolute;
+    left: 0;
+    color: var(--accent-cyan);
+    font-weight: 700;
+  }
+
+  /* Chart card */
+  .chart-card {
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    padding: 28px 28px 20px;
+    margin-bottom: 32px;
+    position: relative;
+    overflow: hidden;
+  }
+  .chart-card::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 1px;
+    background: linear-gradient(90deg, transparent, var(--accent-blue), transparent);
+  }
+  .chart-card h3 {
+    font-size: 1rem;
+    font-weight: 600;
+    margin-bottom: 4px;
+  }
+  .chart-card .chart-subtitle {
+    font-size: 0.8rem;
+    color: var(--text-muted);
+    margin-bottom: 20px;
+  }
+  .chart-wrapper {
+    position: relative;
+    width: 100%;
+  }
+  .chart-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 24px;
+  }
+  @media (max-width: 768px) {
+    .chart-row { grid-template-columns: 1fr; }
+  }
+
+  /* Tables */
+  .data-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 0.88rem;
+    margin-bottom: 24px;
+  }
+  .data-table thead th {
+    text-align: left;
+    padding: 12px 16px;
+    font-size: 0.72rem;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--text-muted);
+    border-bottom: 1px solid var(--border);
+    background: rgba(255,255,255,0.02);
+  }
+  .data-table tbody td {
+    padding: 12px 16px;
+    border-bottom: 1px solid rgba(255,255,255,0.04);
+    color: var(--text-secondary);
+  }
+  .data-table tbody tr:hover td {
+    background: rgba(59,130,246,0.04);
+  }
+  .data-table .highlight { color: var(--text-primary); font-weight: 600; }
+  .risk-high { color: var(--accent-red); font-weight: 600; }
+  .risk-moderate { color: var(--accent-amber); font-weight: 600; }
+  .risk-mixed { color: var(--accent-purple); font-weight: 600; }
+  .risk-very-high { color: #f87171; font-weight: 700; }
+
+  /* Callout */
+  .callout {
+    background: rgba(239,68,68,0.06);
+    border-left: 3px solid var(--accent-red);
+    border-radius: 0 10px 10px 0;
+    padding: 20px 24px;
+    margin: 24px 0;
+  }
+  .callout.warn {
+    background: rgba(245,158,11,0.06);
+    border-left-color: var(--accent-amber);
+  }
+  .callout.info {
+    background: rgba(59,130,246,0.06);
+    border-left-color: var(--accent-blue);
+  }
+  .callout p { margin-bottom: 0; font-size: 0.92rem; }
+
+  /* Risk Watch list */
+  .risk-list {
+    counter-reset: risk;
+    list-style: none !important;
+    padding: 0 !important;
+  }
+  .risk-list li {
+    counter-increment: risk;
+    padding: 14px 16px 14px 52px !important;
+    position: relative;
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    margin-bottom: 10px;
+    transition: border-color 0.2s;
+  }
+  .risk-list li:hover { border-color: var(--accent-amber); }
+  .risk-list li::before {
+    content: counter(risk) !important;
+    position: absolute;
+    left: 16px;
+    top: 14px;
+    width: 24px;
+    height: 24px;
+    border-radius: 6px;
+    background: rgba(245,158,11,0.12);
+    color: var(--accent-amber) !important;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.75rem;
+    font-weight: 700;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  /* Bottom line */
+  .bottom-line {
+    background: linear-gradient(135deg, rgba(139,92,246,0.08) 0%, rgba(59,130,246,0.08) 100%);
+    border: 1px solid rgba(139,92,246,0.15);
+    border-radius: 16px;
+    padding: 36px 40px;
+    margin-bottom: 48px;
+  }
+  .bottom-line h2 {
+    font-size: 1.5rem;
+    font-weight: 700;
+    margin-bottom: 16px;
+    background: linear-gradient(135deg, #e2e8f0, #8b5cf6);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+  .bottom-line p {
+    color: var(--text-secondary);
+    font-size: 0.95rem;
+    line-height: 1.85;
+  }
+  .bottom-line strong { color: var(--text-primary); }
+
+  /* Sources */
+  .sources {
+    margin-bottom: 80px;
+    padding: 32px;
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: 14px;
+  }
+  .sources h3 {
+    font-size: 0.75rem;
+    font-weight: 700;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--text-muted);
+    margin-bottom: 16px;
+  }
+  .sources-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 8px 24px;
+  }
+  @media (max-width: 768px) {
+    .sources-grid { grid-template-columns: 1fr; }
+  }
+  .sources a {
+    display: block;
+    font-size: 0.8rem;
+    color: var(--text-muted);
+    text-decoration: none;
+    padding: 4px 0;
+    transition: color 0.2s;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+  .sources a:hover { color: var(--accent-cyan); }
+
+  /* Footer */
+  .footer {
+    text-align: center;
+    padding: 32px 0 48px;
+    font-size: 0.78rem;
+    color: var(--text-muted);
+    border-top: 1px solid var(--border);
+  }
+
+  /* Scrollbar */
+  ::-webkit-scrollbar { width: 8px; }
+  ::-webkit-scrollbar-track { background: var(--bg-primary); }
+  ::-webkit-scrollbar-thumb { background: #1e293b; border-radius: 4px; }
+  ::-webkit-scrollbar-thumb:hover { background: #334155; }
+</style>
+</head>
+<body>
+
+<div class="container">
+
+  <!-- HERO -->
+  <header class="hero">
+    <div class="hero-badge">Research Report — March 2026</div>
+    <h1>AI Capex Delay &<br>Data Center Buildout Risk</h1>
+    <p class="subtitle">The AI infrastructure boom is bending — not breaking. A convergence of financing stress, physical bottlenecks, and geopolitical risk is producing 12–18 month average delays across the global buildout pipeline.</p>
+    <div class="hero-meta">
+      <span><span class="dot dot-warn"></span> Risk Level: Elevated</span>
+      <span>Prepared for: Jay Hua, Pionex</span>
+      <span>Date: March 9, 2026</span>
+    </div>
+  </header>
+
+  <!-- KPI ROW -->
+  <div class="kpi-row">
+    <div class="kpi-card">
+      <div class="kpi-value kpi-blue">$660–690B</div>
+      <div class="kpi-label">2026 Committed Capex</div>
+    </div>
+    <div class="kpi-card">
+      <div class="kpi-value kpi-amber">12–18 mo</div>
+      <div class="kpi-label">Avg. Delivery Delay</div>
+    </div>
+    <div class="kpi-card">
+      <div class="kpi-value kpi-red">$120B+</div>
+      <div class="kpi-label">Off-Balance-Sheet SPV Debt</div>
+    </div>
+    <div class="kpi-card">
+      <div class="kpi-value kpi-purple">15–30%</div>
+      <div class="kpi-label">Valuation Downside Risk</div>
+    </div>
+    <div class="kpi-card">
+      <div class="kpi-value kpi-cyan">30–50%</div>
+      <div class="kpi-label">2026 Capacity at Risk</div>
+    </div>
+  </div>
+
+  <!-- EXEC SUMMARY -->
+  <div class="exec-summary">
+    <h2>Executive Summary</h2>
+    <p>The AI data center buildout is facing a complex convergence of structural headwinds: Oracle/Stargate project cancellations, SPV financing opacity concerns, bank and investor discipline tightening, Middle East geopolitical risk, and physical bottlenecks in power and labor. While headline capex commitments remain massive ($660–690B in 2026), the <strong>actual delivery</strong> of that capacity is experiencing meaningful delays — estimated at <strong>6 to 24 months</strong> depending on project type. AI company valuations that were priced assuming frictionless buildout now face a recalibration risk of <strong>15–30% downside</strong> if delays compound into a broader ROI credibility crisis.</p>
+  </div>
+
+  <!-- SECTION 1: Macro Capex -->
+  <div class="section">
+    <div class="section-header">
+      <span class="section-number">01</span>
+      <h2>Macro Capex Trajectory — Still Big, But Decelerating</h2>
+    </div>
+    <p>The five largest hyperscalers (Microsoft, Alphabet, Amazon, Meta, Oracle) have committed $660–690B in 2026 capex — roughly double 2025 levels. Growth rates are decelerating, however.</p>
+
+    <div class="chart-row">
+      <div class="chart-card">
+        <h3>Hyperscaler Capex Trajectory</h3>
+        <div class="chart-subtitle">Estimated annual capex ($B) and year-over-year growth</div>
+        <div class="chart-wrapper">
+          <canvas id="capexChart"></canvas>
+        </div>
+      </div>
+      <div class="chart-card">
+        <h3>The ROI Gap</h3>
+        <div class="chart-subtitle">Required vs. actual profit to justify capex ($B)</div>
+        <div class="chart-wrapper">
+          <canvas id="roiGapChart"></canvas>
+        </div>
+      </div>
+    </div>
+
+    <div class="callout info">
+      <p><strong>Key risk:</strong> Maintaining current investor returns on capital would require these companies to generate an annual profit run-rate exceeding <strong>$1 trillion</strong> — more than double the 2026 consensus estimate of ~$450B in net income. AI-related services currently generate only ~$25B in annual revenue, roughly 10% of the infrastructure spend.</p>
+    </div>
+  </div>
+
+  <!-- SECTION 2: Oracle / Stargate -->
+  <div class="section">
+    <div class="section-header">
+      <span class="section-number">02</span>
+      <h2>Oracle / Stargate: The Bellwether Crack</h2>
+    </div>
+    <p>The Oracle-OpenAI relationship has become the most visible indicator of AI data center stress.</p>
+    <ul>
+      <li><strong>March 2026:</strong> Oracle and OpenAI cancelled plans to expand the flagship Abilene, TX campus after financing negotiations broke down over capacity projections and evolving needs.</li>
+      <li><strong>December 2025:</strong> Bloomberg reported Oracle was postponing completion of multiple data centers from 2027 to 2028, citing labor and material shortages.</li>
+      <li><strong>Financial Stress:</strong> Oracle is reportedly planning layoffs of 20,000–30,000 staff. FT estimates Oracle borrowed ~<strong>$66B through SPVs</strong> to fund its AI buildout.</li>
+      <li><strong>Nvidia Pullback:</strong> Nvidia scaled back a proposed $100B OpenAI investment tied to Stargate — a polite signal of capital discipline from the semiconductor layer.</li>
+    </ul>
+  </div>
+
+  <!-- SECTION 3: SPV Financing -->
+  <div class="section">
+    <div class="section-header">
+      <span class="section-number">03</span>
+      <h2>SPV Financing — $120B+ Off-Balance-Sheet and Growing</h2>
+    </div>
+    <p>Tech giants have used Special Purpose Vehicles (SPVs) to finance data centers off-balance-sheet at massive scale.</p>
+
+    <div class="chart-row">
+      <div class="chart-card">
+        <h3>Known SPV Financing Breakdown</h3>
+        <div class="chart-subtitle">Off-balance-sheet AI infrastructure debt ($B)</div>
+        <div class="chart-wrapper" style="max-width:360px;margin:0 auto">
+          <canvas id="spvChart"></canvas>
+        </div>
+      </div>
+      <div class="chart-card">
+        <h3>Projected Private Credit Demand</h3>
+        <div class="chart-subtitle">AI infrastructure financing requirements ($B)</div>
+        <div class="chart-wrapper">
+          <canvas id="creditDemandChart"></canvas>
+        </div>
+      </div>
+    </div>
+
+    <div class="callout">
+      <p><strong>Systemic Risk:</strong> If AI operators face financial difficulties, the SPV structure means stress propagates directly to private credit markets — spreading risk to insurance companies, pension funds, and credit investors who purchased SPV bonds. Wall Street firms (PIMCO, BlackRock, Apollo, Blue Owl, JPMorgan) are the primary capital providers.</p>
+    </div>
+  </div>
+
+  <!-- SECTION 4: Bank Posture -->
+  <div class="section">
+    <div class="section-header">
+      <span class="section-number">04</span>
+      <h2>Bank and Institutional Investor Posture</h2>
+    </div>
+    <p>There is not yet a coordinated pullback from institutional investors, but the tone has shifted from uncritical deployment to conditional scrutiny.</p>
+    <ul>
+      <li><strong>Goldman Sachs</strong> warned that AI companies may generate only half the profit needed to justify capex investment, calling for "picking winners and losers."</li>
+      <li><strong>Hyperscaler capex now consumes ~100% of operating cash flow</strong>, vs. a 10-year average of 40% — debt markets must bridge the gap.</li>
+      <li>The tech sector may need to issue <strong>$1.5 trillion in new debt</strong> (Morgan Stanley / JPMorgan) to fund builds.</li>
+      <li>More than <strong>$1 trillion in Big Tech market cap</strong> was temporarily erased earlier in 2026 amid capex ROI concerns.</li>
+    </ul>
+
+    <div class="chart-card" style="margin-top:20px">
+      <h3>Capex as % of Operating Cash Flow</h3>
+      <div class="chart-subtitle">Hyperscaler average — 10-year vs. current</div>
+      <div class="chart-wrapper" style="max-width:500px; margin:0 auto">
+        <canvas id="cashFlowChart"></canvas>
+      </div>
+    </div>
+  </div>
+
+  <!-- SECTION 5: Middle East -->
+  <div class="section">
+    <div class="section-header">
+      <span class="section-number">05</span>
+      <h2>Middle East: UAE, Saudi Arabia, Qatar</h2>
+    </div>
+    <p>The Gulf States have made AI data center investment a cornerstone of economic diversification. Trump's May 2025 Gulf tour generated <strong>$2+ trillion</strong> in investment pledges, with AI infrastructure a central pillar.</p>
+    <ul>
+      <li><strong>Saudi Arabia / HUMAIN:</strong> $77B infrastructure strategy, targeting 1.9 GW by 2030; $10B partnership with Google Cloud/PIF.</li>
+      <li><strong>UAE:</strong> 5 GW AI campus in Abu Dhabi (26 sq km); Microsoft committed $15.2B; initial 200 MW cluster slated live in 2026.</li>
+      <li><strong>Qatar:</strong> Significant commitments tied to US tech partnerships.</li>
+    </ul>
+
+    <div class="chart-card" style="margin-top:20px">
+      <h3>Gulf AI Investment Commitments</h3>
+      <div class="chart-subtitle">Key announced deals ($B)</div>
+      <div class="chart-wrapper" style="max-width:600px; margin:0 auto">
+        <canvas id="gulfChart"></canvas>
+      </div>
+    </div>
+
+    <div class="callout warn">
+      <p><strong>Emerging risks:</strong> The escalating U.S.-Israeli air campaign against Iran is injecting fresh uncertainty. Amazon's data center fire in the UAE has "upended the region's pitch as a safe harbor for the world's data." The combination introduces a <strong>6–12 month potential pause</strong> in new commitment announcements.</p>
+    </div>
+  </div>
+
+  <!-- SECTION 6: Physical Constraints -->
+  <div class="section">
+    <div class="section-header">
+      <span class="section-number">06</span>
+      <h2>Physical Constraints: Quantifying the Delay</h2>
+    </div>
+    <p>Construction delays are measurable and significant. Up to <strong>30–50% of anticipated 2026 AI capacity</strong> may face delays. US data center capacity under construction actually <strong>declined</strong> from 6.35 GW (end-2024) to 5.99 GW (end-2025) — the first contraction since 2020.</p>
+
+    <div class="chart-row">
+      <div class="chart-card">
+        <h3>Physical Constraint Delays</h3>
+        <div class="chart-subtitle">Estimated delay range by constraint type (months)</div>
+        <div class="chart-wrapper">
+          <canvas id="constraintChart"></canvas>
+        </div>
+      </div>
+      <div class="chart-card">
+        <h3>Delay by Project Category</h3>
+        <div class="chart-subtitle">Estimated delivery slippage (months)</div>
+        <div class="chart-wrapper">
+          <canvas id="delayByTypeChart"></canvas>
+        </div>
+      </div>
+    </div>
+
+    <div class="chart-card">
+      <h3>US Data Center Capacity Under Construction</h3>
+      <div class="chart-subtitle">First contraction since 2020 (GW)</div>
+      <div class="chart-wrapper" style="max-width:500px; margin:0 auto">
+        <canvas id="capacityChart"></canvas>
+      </div>
+    </div>
+  </div>
+
+  <!-- SECTION 7: Valuation Impact -->
+  <div class="section">
+    <div class="section-header">
+      <span class="section-number">07</span>
+      <h2>Valuation Impact on AI Companies</h2>
+    </div>
+
+    <div class="chart-card">
+      <h3>IRR Sensitivity to Construction Delays</h3>
+      <div class="chart-subtitle">Representative 60 MW data center project</div>
+      <div class="chart-wrapper" style="max-width:520px; margin:0 auto">
+        <canvas id="irrChart"></canvas>
+      </div>
+    </div>
+
+    <div class="chart-card">
+      <h3>Valuation Risk by Company Category</h3>
+      <div class="chart-subtitle">Estimated downside if delays compound into broader ROI crisis</div>
+      <div class="chart-wrapper">
+        <canvas id="valuationRiskChart"></canvas>
+      </div>
+    </div>
+
+    <table class="data-table">
+      <thead>
+        <tr>
+          <th>Company Type</th>
+          <th>Delay / Capex Risk</th>
+          <th>Estimated Valuation Downside</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td class="highlight">Hyperscalers (MSFT, AMZN, GOOGL, META)</td>
+          <td class="risk-moderate">Moderate</td>
+          <td>10–20%</td>
+        </tr>
+        <tr>
+          <td class="highlight">Pure AI Infrastructure (ORCL)</td>
+          <td class="risk-high">High</td>
+          <td>20–35%</td>
+        </tr>
+        <tr>
+          <td class="highlight">Nvidia / GPU Suppliers</td>
+          <td class="risk-mixed">Mixed</td>
+          <td>15–25%</td>
+        </tr>
+        <tr>
+          <td class="highlight">AI Software / Application Cos.</td>
+          <td class="risk-high">High</td>
+          <td>20–40%</td>
+        </tr>
+        <tr>
+          <td class="highlight">Private AI Unicorns</td>
+          <td class="risk-very-high">Very High</td>
+          <td>30–50%</td>
+        </tr>
+        <tr>
+          <td class="highlight">Data Center REITs / Operators</td>
+          <td class="risk-moderate">Moderate</td>
+          <td>5–15% (potential upside)</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- SECTION 8: Risks to Watch -->
+  <div class="section">
+    <div class="section-header">
+      <span class="section-number">08</span>
+      <h2>Key Risks to Watch (Next 6–12 Months)</h2>
+    </div>
+    <ul class="risk-list">
+      <li><strong>Oracle earnings guidance on data center commitments</strong> — any revised 2027–2028 targets will be a market signal</li>
+      <li><strong>SPV credit spreads</strong> — widening would indicate institutional lenders tightening on private AI credit</li>
+      <li><strong>Middle East re-commitment pace</strong> — any delay in UAE/Saudi signing new tranches would reduce the perceived $500B Stargate global funding base</li>
+      <li><strong>Hyperscaler Q2 2026 earnings capex guidance</strong> — the market will penalize any downward revision harshly</li>
+      <li><strong>Power grid policy</strong> — US federal permitting reform (or lack thereof) is the single largest lever on the buildout timeline</li>
+      <li><strong>"Second DeepSeek moment"</strong> — a major efficiency breakthrough could crater compute demand projections overnight</li>
+    </ul>
+  </div>
+
+  <!-- BOTTOM LINE -->
+  <div class="bottom-line">
+    <h2>Bottom Line</h2>
+    <p>The AI data center buildout is not collapsing — it is <strong>bending</strong>. The combination of Oracle/Stargate friction, SPV leverage opacity, institutional lender discipline, Middle East geopolitical risk, and physical bottlenecks in power and labor is producing a <strong>12–18 month average delay</strong> in planned capacity delivery. This is enough to create a meaningful <strong>expectations reset</strong> for AI company valuations, particularly those priced on frictionless, on-schedule hyperscale infrastructure. The companies most at risk are those with high leverage (Oracle), high valuation multiples relative to current AI revenue (AI software/application unicorns), and those dependent on Gulf state commitments that now carry execution uncertainty. The hyperscalers themselves face a 10–20% correction risk if capex guidance is revised downward or if the ROI narrative continues to weaken.</p>
+  </div>
+
+  <!-- SOURCES -->
+  <div class="sources">
+    <h3>Sources</h3>
+    <div class="sources-grid">
+      <a href="https://www.goldmansachs.com/insights/articles/why-ai-companies-may-invest-more-than-500-billion-in-2026" target="_blank">Goldman Sachs: Why AI Companies May Invest More than $500B in 2026</a>
+      <a href="https://fortune.com/2026/01/07/ai-companies-profit-capex-investment-goldman-sachs-stocks/" target="_blank">Fortune: Tech companies may only get half the profit they need</a>
+      <a href="https://www.bloomberg.com/news/articles/2026-03-06/oracle-and-openai-end-plans-to-expand-flagship-data-center" target="_blank">Bloomberg: Oracle and OpenAI End Plans to Expand Flagship Data Center</a>
+      <a href="https://www.datacenterdynamics.com/en/news/oracle-delays-some-of-its-openai-data-centers-from-2027-to-2028-report/" target="_blank">Oracle delays OpenAI data centers — Data Center Dynamics</a>
+      <a href="https://www.tomshardware.com/tech-industry/artificial-intelligence/openais-massive-stargate-data-center-canceled" target="_blank">Tom's Hardware: OpenAI's Massive Stargate Data Center Cancelled</a>
+      <a href="https://www.ernestchiang.com/en/posts/2025/off-balance-sheet-ai-how-spvs-are-financing-the-data-center-boom-while-hiding-leverage/" target="_blank">Ernest Chiang: Off-Balance Sheet AI — SPVs and the Data Center Boom</a>
+      <a href="https://www.insurancejournal.com/news/international/2026/02/03/856623.htm" target="_blank">Insurance Journal: The $3 Trillion AI Data Center Build-Out and Debt</a>
+      <a href="https://ustechtimes.com/data-center-delays-put-50-of-2026-ai-capacity-at-risk/" target="_blank">US Tech Times: Data Center Delays Put 50% of 2026 AI Capacity at Risk</a>
+      <a href="https://www.bloomberg.com/news/articles/2026-02-25/us-data-center-construction-fell-amid-permit-and-power-delays" target="_blank">Bloomberg: US Data Center Construction Drops</a>
+      <a href="https://www.axios.com/2026/02/24/ai-data-center-boom-projects-numbers" target="_blank">Axios: Why the AI Data Center Boom Is Stalling Worldwide</a>
+      <a href="https://www.bain.com/about/media-center/press-releases/20252/next-phase-of-data-center-growth" target="_blank">Bain & Co: Next Phase of Data Center Growth</a>
+      <a href="https://foreignpolicy.com/2026/02/23/gulf-states-investment-ai-american-protection-qatar-uae-saudi/" target="_blank">Foreign Policy: Gulf States' AI Investment Is Partly About US Protection</a>
+      <a href="https://money.usnews.com/investing/news/articles/2026-03-02/factbox-escalating-tensions-turn-spotlight-on-big-techs-ai-investments-in-middle-east" target="_blank">US News: Big Tech's AI Investments in Middle East</a>
+      <a href="https://restofworld.org/2026/amazon-uae-data-center-fire-iran-strike/" target="_blank">Rest of World: Amazon Fire in UAE</a>
+      <a href="https://finance.yahoo.com/news/oracle-ai-data-center-pullback-010458964.html" target="_blank">Yahoo Finance: Oracle AI Data Center Pullback</a>
+      <a href="https://wolfstreet.com/2026/02/07/amzn-goog-msft-meta-orcl-plan-700-billion-in-largely-ai-related-capex-in-2026" target="_blank">Wolf Street: Where the $700B in Hyperscaler Capex Cash Comes From</a>
+      <a href="https://fortune.com/2026/01/29/ai-capex-growth-tech-stocks-slow-down/" target="_blank">Fortune: AI capex growth set to slow down</a>
+      <a href="https://www.thefastmode.com/expert-opinion/47210-what-we-learned-in-2025-about-data-center-builds" target="_blank">The Fast Mode: Data Center Build Delays Will Persist in 2026</a>
+    </div>
+  </div>
+
+  <footer class="footer">
+    AI Capex Delay & Data Center Buildout Risk — March 2026 &middot; Prepared for Pionex
+  </footer>
+</div>
+
+<script>
+// Chart.js global config
+Chart.defaults.color = '#94a3b8';
+Chart.defaults.borderColor = '#1e293b';
+Chart.defaults.font.family = "'Inter', sans-serif";
+Chart.defaults.font.size = 12;
+Chart.defaults.plugins.legend.labels.padding = 16;
+Chart.defaults.plugins.legend.labels.usePointStyle = true;
+Chart.defaults.plugins.legend.labels.pointStyle = 'circle';
+
+const blue = '#3b82f6';
+const cyan = '#06b6d4';
+const purple = '#8b5cf6';
+const pink = '#ec4899';
+const amber = '#f59e0b';
+const red = '#ef4444';
+const green = '#10b981';
+const blueBg = '#3b82f625';
+const cyanBg = '#06b6d425';
+const purpleBg = '#8b5cf625';
+const amberBg = '#f59e0b25';
+const redBg = '#ef444425';
+
+// 1. Capex trajectory
+new Chart(document.getElementById('capexChart'), {
+  type: 'bar',
+  data: {
+    labels: ['2024', '2025', '2026E'],
+    datasets: [
+      {
+        label: 'Capex ($B)',
+        data: [256, 443, 602],
+        backgroundColor: [blueBg, cyanBg, purpleBg],
+        borderColor: [blue, cyan, purple],
+        borderWidth: 2,
+        borderRadius: 8,
+        yAxisID: 'y'
+      },
+      {
+        label: 'YoY Growth (%)',
+        data: [null, 73, 36],
+        type: 'line',
+        borderColor: amber,
+        backgroundColor: amber,
+        pointBackgroundColor: amber,
+        pointRadius: 6,
+        pointHoverRadius: 8,
+        borderWidth: 2,
+        tension: 0.3,
+        yAxisID: 'y1'
+      }
+    ]
+  },
+  options: {
+    responsive: true,
+    interaction: { intersect: false, mode: 'index' },
+    scales: {
+      y: { beginAtZero: true, grid: { color: '#1e293b40' }, ticks: { callback: v => '$' + v + 'B' } },
+      y1: { position: 'right', beginAtZero: true, max: 100, grid: { drawOnChartArea: false }, ticks: { callback: v => v + '%' } },
+      x: { grid: { display: false } }
+    },
+    plugins: { legend: { position: 'top' } }
+  }
+});
+
+// 2. ROI Gap
+new Chart(document.getElementById('roiGapChart'), {
+  type: 'bar',
+  data: {
+    labels: ['Required Profit\nRun-Rate', '2026 Net Income\nConsensus', 'AI Services\nRevenue'],
+    datasets: [{
+      data: [1000, 450, 25],
+      backgroundColor: [redBg, amberBg, blueBg],
+      borderColor: [red, amber, blue],
+      borderWidth: 2,
+      borderRadius: 8
+    }]
+  },
+  options: {
+    indexAxis: 'y',
+    responsive: true,
+    plugins: { legend: { display: false } },
+    scales: {
+      x: { ticks: { callback: v => '$' + v + 'B' }, grid: { color: '#1e293b40' } },
+      y: { grid: { display: false } }
+    }
+  }
+});
+
+// 3. SPV Financing
+new Chart(document.getElementById('spvChart'), {
+  type: 'doughnut',
+  data: {
+    labels: ['Oracle SPVs (~$66B)', 'Meta + Partners (~$28B)', 'Other Big Tech (~$26B+)'],
+    datasets: [{
+      data: [66, 28, 26],
+      backgroundColor: [purple + '90', cyan + '90', blue + '90'],
+      borderColor: [purple, cyan, blue],
+      borderWidth: 2,
+      hoverOffset: 8
+    }]
+  },
+  options: {
+    responsive: true,
+    cutout: '55%',
+    plugins: {
+      legend: { position: 'bottom', labels: { padding: 14, font: { size: 11 } } }
+    }
+  }
+});
+
+// 4. Credit Demand
+new Chart(document.getElementById('creditDemandChart'), {
+  type: 'bar',
+  data: {
+    labels: ['Current SPV\nDebt (~2025)', 'Morgan Stanley\nProjection (2028)', 'JPMorgan\nAnnual Forecast'],
+    datasets: [{
+      label: 'Private Credit ($B)',
+      data: [120, 800, 300],
+      backgroundColor: [blueBg, purpleBg, cyanBg],
+      borderColor: [blue, purple, cyan],
+      borderWidth: 2,
+      borderRadius: 8
+    }]
+  },
+  options: {
+    responsive: true,
+    plugins: { legend: { display: false } },
+    scales: {
+      y: { beginAtZero: true, ticks: { callback: v => '$' + v + 'B' }, grid: { color: '#1e293b40' } },
+      x: { grid: { display: false } }
+    }
+  }
+});
+
+// 5. Cash flow %
+new Chart(document.getElementById('cashFlowChart'), {
+  type: 'bar',
+  data: {
+    labels: ['10-Year Average', 'Current (2025–26)'],
+    datasets: [{
+      label: 'Capex as % of Operating Cash Flow',
+      data: [40, 100],
+      backgroundColor: [blueBg, redBg],
+      borderColor: [blue, red],
+      borderWidth: 2,
+      borderRadius: 8,
+      barThickness: 56
+    }]
+  },
+  options: {
+    responsive: true,
+    plugins: {
+      legend: { display: false },
+      annotation: {}
+    },
+    scales: {
+      y: { beginAtZero: true, max: 120, ticks: { callback: v => v + '%' }, grid: { color: '#1e293b40' } },
+      x: { grid: { display: false } }
+    }
+  }
+});
+
+// 6. Gulf investments
+new Chart(document.getElementById('gulfChart'), {
+  type: 'bar',
+  data: {
+    labels: ['Saudi / HUMAIN\nInfra Strategy', 'UAE Abu Dhabi\n5 GW Campus', 'Microsoft\nUAE Commit', 'Google / PIF\nPartnership'],
+    datasets: [{
+      label: '$B',
+      data: [77, 50, 15.2, 10],
+      backgroundColor: [amberBg, cyanBg, blueBg, purpleBg],
+      borderColor: [amber, cyan, blue, purple],
+      borderWidth: 2,
+      borderRadius: 8
+    }]
+  },
+  options: {
+    responsive: true,
+    plugins: { legend: { display: false } },
+    scales: {
+      y: { beginAtZero: true, ticks: { callback: v => '$' + v + 'B' }, grid: { color: '#1e293b40' } },
+      x: { grid: { display: false } }
+    }
+  }
+});
+
+// 7. Physical constraint delays
+new Chart(document.getElementById('constraintChart'), {
+  type: 'bar',
+  data: {
+    labels: ['Power Grid\nConnection', 'Permitting', 'Full Build\nCycle', 'Labor\nShortages', 'Equipment\nLead Times'],
+    datasets: [
+      {
+        label: 'Min Delay (months)',
+        data: [24, 12, 18, 12, 8],
+        backgroundColor: blueBg,
+        borderColor: blue,
+        borderWidth: 2,
+        borderRadius: 4
+      },
+      {
+        label: 'Max Delay (months)',
+        data: [84, 36, 30, 24, 24],
+        backgroundColor: redBg,
+        borderColor: red,
+        borderWidth: 2,
+        borderRadius: 4
+      }
+    ]
+  },
+  options: {
+    indexAxis: 'y',
+    responsive: true,
+    plugins: { legend: { position: 'top' } },
+    scales: {
+      x: { beginAtZero: true, ticks: { callback: v => v + ' mo' }, grid: { color: '#1e293b40' } },
+      y: { grid: { display: false } }
+    }
+  }
+});
+
+// 8. Delay by project type
+new Chart(document.getElementById('delayByTypeChart'), {
+  type: 'bar',
+  data: {
+    labels: ['New Greenfield\n(US)', 'Brownfield /\nExpansion', 'Oracle/Stargate\nPipeline', 'Middle East\nMega-projects'],
+    datasets: [
+      {
+        label: 'Min (months)',
+        data: [12, 6, 12, 6],
+        backgroundColor: cyanBg,
+        borderColor: cyan,
+        borderWidth: 2,
+        borderRadius: 4
+      },
+      {
+        label: 'Max (months)',
+        data: [24, 12, 24, 18],
+        backgroundColor: purpleBg,
+        borderColor: purple,
+        borderWidth: 2,
+        borderRadius: 4
+      }
+    ]
+  },
+  options: {
+    responsive: true,
+    plugins: { legend: { position: 'top' } },
+    scales: {
+      y: { beginAtZero: true, ticks: { callback: v => v + ' mo' }, grid: { color: '#1e293b40' } },
+      x: { grid: { display: false } }
+    }
+  }
+});
+
+// 9. Capacity decline
+new Chart(document.getElementById('capacityChart'), {
+  type: 'line',
+  data: {
+    labels: ['End 2024', 'End 2025'],
+    datasets: [{
+      label: 'US DC Capacity Under Construction (GW)',
+      data: [6.35, 5.99],
+      borderColor: red,
+      backgroundColor: redBg,
+      fill: true,
+      pointBackgroundColor: red,
+      pointRadius: 7,
+      pointHoverRadius: 10,
+      borderWidth: 3,
+      tension: 0.3
+    }]
+  },
+  options: {
+    responsive: true,
+    plugins: { legend: { position: 'top' } },
+    scales: {
+      y: { min: 5.5, max: 6.6, ticks: { callback: v => v.toFixed(2) + ' GW' }, grid: { color: '#1e293b40' } },
+      x: { grid: { display: false } }
+    }
+  }
+});
+
+// 10. IRR Sensitivity
+new Chart(document.getElementById('irrChart'), {
+  type: 'bar',
+  data: {
+    labels: ['On-Time', '3-Month Delay', '6-Month Delay'],
+    datasets: [{
+      label: 'IRR (%)',
+      data: [17.1, 12.6, 8.8],
+      backgroundColor: [green + '50', amber + '50', red + '50'],
+      borderColor: [green, amber, red],
+      borderWidth: 2,
+      borderRadius: 8,
+      barThickness: 52
+    }]
+  },
+  options: {
+    responsive: true,
+    plugins: {
+      legend: { display: false },
+      tooltip: { callbacks: { label: ctx => ctx.parsed.y.toFixed(1) + '% IRR' } }
+    },
+    scales: {
+      y: { beginAtZero: true, max: 22, ticks: { callback: v => v + '%' }, grid: { color: '#1e293b40' } },
+      x: { grid: { display: false } }
+    }
+  }
+});
+
+// 11. Valuation risk horizontal bar
+new Chart(document.getElementById('valuationRiskChart'), {
+  type: 'bar',
+  data: {
+    labels: [
+      'Private AI Unicorns',
+      'AI Software / App Cos.',
+      'Pure AI Infra (ORCL)',
+      'Nvidia / GPU Suppliers',
+      'Hyperscalers',
+      'DC REITs / Operators'
+    ],
+    datasets: [
+      {
+        label: 'Min Downside (%)',
+        data: [30, 20, 20, 15, 10, 5],
+        backgroundColor: amberBg,
+        borderColor: amber,
+        borderWidth: 2,
+        borderRadius: 4
+      },
+      {
+        label: 'Max Downside (%)',
+        data: [50, 40, 35, 25, 20, 15],
+        backgroundColor: redBg,
+        borderColor: red,
+        borderWidth: 2,
+        borderRadius: 4
+      }
+    ]
+  },
+  options: {
+    indexAxis: 'y',
+    responsive: true,
+    plugins: { legend: { position: 'top' } },
+    scales: {
+      x: { beginAtZero: true, max: 55, ticks: { callback: v => v + '%' }, grid: { color: '#1e293b40' } },
+      y: { grid: { display: false } }
+    }
+  }
+});
+</script>
+
+</body>
+</html>
