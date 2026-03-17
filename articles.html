@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Articles — Jay Hua</title>
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="navbar navbar-solid" id="navbar">
+        <div class="nav-container">
+            <a href="index.html" class="nav-logo">JH</a>
+            <button class="nav-toggle" id="navToggle" aria-label="Toggle navigation">
+                <span></span><span></span><span></span>
+            </button>
+            <ul class="nav-menu" id="navMenu">
+                <li><a href="index.html#about" class="nav-link">About</a></li>
+                <li><a href="articles.html" class="nav-link active">Articles</a></li>
+                <li><a href="reports.html" class="nav-link">Reports</a></li>
+                <li><a href="media.html" class="nav-link">Media</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <!-- Page Header -->
+    <header class="page-header">
+        <div class="container">
+            <span class="page-label">Written by Me</span>
+            <h1>Articles</h1>
+            <p class="page-description">Thoughts, stories, and perspectives on sports, gaming, travel, and life.</p>
+        </div>
+    </header>
+
+    <!-- Filter Bar -->
+    <section class="section">
+        <div class="container">
+            <div class="filter-bar">
+                <button class="filter-btn active" data-filter="all">All</button>
+                <button class="filter-btn" data-filter="sports">Sports</button>
+                <button class="filter-btn" data-filter="gaming">Gaming</button>
+                <button class="filter-btn" data-filter="travel">Travel</button>
+                <button class="filter-btn" data-filter="life">Life</button>
+            </div>
+
+            <!-- Articles Grid -->
+            <div class="articles-grid" id="articlesGrid">
+                <!-- Sample Article 1 -->
+                <article class="article-card" data-category="travel">
+                    <div class="article-meta">
+                        <span class="article-date">Mar 10, 2026</span>
+                        <span class="article-tag">Travel</span>
+                    </div>
+                    <h3 class="article-title">Our Family Trip to Kyoto — A Week of Wonder</h3>
+                    <p class="article-excerpt">Cherry blossoms, ancient temples, and the best ramen we've ever had. Here's how our family of four experienced the magic of Kyoto.</p>
+                    <span class="article-read">Read More →</span>
+                </article>
+
+                <!-- Sample Article 2 -->
+                <article class="article-card" data-category="gaming">
+                    <div class="article-meta">
+                        <span class="article-date">Feb 22, 2026</span>
+                        <span class="article-tag">Gaming</span>
+                    </div>
+                    <h3 class="article-title">Why I Keep Coming Back to Open-World Games</h3>
+                    <p class="article-excerpt">There's something about the freedom of an open world that mirrors the explorer in me. A reflection on why these games resonate so deeply.</p>
+                    <span class="article-read">Read More →</span>
+                </article>
+
+                <!-- Sample Article 3 -->
+                <article class="article-card" data-category="sports">
+                    <div class="article-meta">
+                        <span class="article-date">Feb 8, 2026</span>
+                        <span class="article-tag">Sports</span>
+                    </div>
+                    <h3 class="article-title">Lessons from the Court: What Basketball Taught Me About Leadership</h3>
+                    <p class="article-excerpt">Every pickup game is a masterclass in teamwork, quick decisions, and reading people. Here's what I've carried off the court.</p>
+                    <span class="article-read">Read More →</span>
+                </article>
+
+                <!-- Sample Article 4 -->
+                <article class="article-card" data-category="life">
+                    <div class="article-meta">
+                        <span class="article-date">Jan 15, 2026</span>
+                        <span class="article-tag">Life</span>
+                    </div>
+                    <h3 class="article-title">Being a Girl Dad — Year Five and Counting</h3>
+                    <p class="article-excerpt">Two daughters, endless tea parties, and a whole lot of heart. Reflections on fatherhood that I didn't expect.</p>
+                    <span class="article-read">Read More →</span>
+                </article>
+            </div>
+
+            <!-- Empty State -->
+            <div class="empty-state" id="emptyState" style="display: none;">
+                <p class="empty-icon">✍️</p>
+                <h3>No articles yet</h3>
+                <p>New articles will appear here as they're published.</p>
+            </div>
+        </div>
+    </section>
+
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-content">
+                <p class="footer-name">Jay Hua</p>
+                <p class="footer-copy">&copy; 2026 · Built with curiosity</p>
+            </div>
+        </div>
+    </footer>
+
+    <script src="js/main.js"></script>
+</body>
+</html>

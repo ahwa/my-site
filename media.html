@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Media Gallery — Jay Hua</title>
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="navbar navbar-solid" id="navbar">
+        <div class="nav-container">
+            <a href="index.html" class="nav-logo">JH</a>
+            <button class="nav-toggle" id="navToggle" aria-label="Toggle navigation">
+                <span></span><span></span><span></span>
+            </button>
+            <ul class="nav-menu" id="navMenu">
+                <li><a href="index.html#about" class="nav-link">About</a></li>
+                <li><a href="articles.html" class="nav-link">Articles</a></li>
+                <li><a href="reports.html" class="nav-link">Reports</a></li>
+                <li><a href="media.html" class="nav-link active">Media</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <!-- Page Header -->
+    <header class="page-header page-header-media">
+        <div class="container">
+            <span class="page-label">Photos & Videos</span>
+            <h1>Media Gallery</h1>
+            <p class="page-description">Captured moments from travels, family life, games, and everything in between.</p>
+        </div>
+    </header>
+
+    <!-- Gallery -->
+    <section class="section">
+        <div class="container">
+            <div class="filter-bar">
+                <button class="filter-btn active" data-filter="all">All</button>
+                <button class="filter-btn" data-filter="photos">Photos</button>
+                <button class="filter-btn" data-filter="videos">Videos</button>
+                <button class="filter-btn" data-filter="travel">Travel</button>
+                <button class="filter-btn" data-filter="family">Family</button>
+                <button class="filter-btn" data-filter="sports">Sports</button>
+            </div>
+
+            <!-- Gallery Grid -->
+            <div class="gallery-grid" id="galleryGrid">
+                <!-- Placeholder items — replace with real media -->
+                <div class="gallery-item" data-category="travel photos">
+                    <div class="gallery-placeholder" style="background: linear-gradient(135deg, #667eea, #764ba2);">
+                        <span class="gallery-placeholder-icon">🗻</span>
+                        <span class="gallery-placeholder-text">Travel Photo</span>
+                    </div>
+                    <div class="gallery-caption">
+                        <p class="gallery-title">Mt. Fuji at Sunrise</p>
+                        <p class="gallery-date">Mar 2026</p>
+                    </div>
+                </div>
+
+                <div class="gallery-item" data-category="family photos">
+                    <div class="gallery-placeholder" style="background: linear-gradient(135deg, #f093fb, #f5576c);">
+                        <span class="gallery-placeholder-icon">👨‍👩‍👧‍👧</span>
+                        <span class="gallery-placeholder-text">Family Photo</span>
+                    </div>
+                    <div class="gallery-caption">
+                        <p class="gallery-title">Beach Day with the Girls</p>
+                        <p class="gallery-date">Feb 2026</p>
+                    </div>
+                </div>
+
+                <div class="gallery-item gallery-item-wide" data-category="sports videos">
+                    <div class="gallery-placeholder" style="background: linear-gradient(135deg, #4facfe, #00f2fe);">
+                        <span class="gallery-placeholder-icon">🏀</span>
+                        <span class="gallery-placeholder-text">Game Highlights</span>
+                        <span class="gallery-play-btn">▶</span>
+                    </div>
+                    <div class="gallery-caption">
+                        <p class="gallery-title">Weekend Pickup Game</p>
+                        <p class="gallery-date">Feb 2026</p>
+                    </div>
+                </div>
+
+                <div class="gallery-item" data-category="travel photos">
+                    <div class="gallery-placeholder" style="background: linear-gradient(135deg, #43e97b, #38f9d7);">
+                        <span class="gallery-placeholder-icon">🌊</span>
+                        <span class="gallery-placeholder-text">Travel Photo</span>
+                    </div>
+                    <div class="gallery-caption">
+                        <p class="gallery-title">Bali Rice Terraces</p>
+                        <p class="gallery-date">Jan 2026</p>
+                    </div>
+                </div>
+
+                <div class="gallery-item" data-category="family photos">
+                    <div class="gallery-placeholder" style="background: linear-gradient(135deg, #fa709a, #fee140);">
+                        <span class="gallery-placeholder-icon">🎂</span>
+                        <span class="gallery-placeholder-text">Family Photo</span>
+                    </div>
+                    <div class="gallery-caption">
+                        <p class="gallery-title">Birthday Celebration</p>
+                        <p class="gallery-date">Jan 2026</p>
+                    </div>
+                </div>
+
+                <div class="gallery-item" data-category="sports photos">
+                    <div class="gallery-placeholder" style="background: linear-gradient(135deg, #a18cd1, #fbc2eb);">
+                        <span class="gallery-placeholder-icon">⛳</span>
+                        <span class="gallery-placeholder-text">Sports Photo</span>
+                    </div>
+                    <div class="gallery-caption">
+                        <p class="gallery-title">Sunday Golf</p>
+                        <p class="gallery-date">Dec 2025</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Upload hint -->
+            <div class="upload-hint">
+                <p>Add your photos and videos to the <code>media/images/</code> and <code>media/videos/</code> folders, then update this page.</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Lightbox -->
+    <div class="lightbox" id="lightbox">
+        <button class="lightbox-close" id="lightboxClose">&times;</button>
+        <div class="lightbox-content" id="lightboxContent"></div>
+    </div>
+
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-content">
+                <p class="footer-name">Jay Hua</p>
+                <p class="footer-copy">&copy; 2026 · Built with curiosity</p>
+            </div>
+        </div>
+    </footer>
+
+    <script src="js/main.js"></script>
+</body>
+</html>
