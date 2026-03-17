@@ -218,6 +218,55 @@ img {
     margin-bottom: 40px;
 }
 
+.hero-socials {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 14px;
+    margin-bottom: 32px;
+}
+
+.hero-social {
+    width: 48px;
+    height: 48px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.03);
+    border: 1px solid var(--border-color);
+    color: var(--text-secondary);
+    transition: var(--transition);
+}
+
+.hero-social svg {
+    width: 21px;
+    height: 21px;
+    fill: currentColor;
+}
+
+.hero-social:hover {
+    transform: translateY(-2px);
+}
+
+.hero-social-x:hover {
+    color: #ffffff;
+    border-color: rgba(255, 255, 255, 0.2);
+    background: rgba(255, 255, 255, 0.08);
+}
+
+.hero-social-linkedin:hover {
+    color: #0a66c2;
+    border-color: rgba(10, 102, 194, 0.35);
+    background: rgba(10, 102, 194, 0.12);
+}
+
+.hero-social-github:hover {
+    color: #f0f0f5;
+    border-color: rgba(240, 240, 245, 0.2);
+    background: rgba(240, 240, 245, 0.08);
+}
+
 .tag {
     display: inline-block;
     padding: 6px 16px;
@@ -909,6 +958,11 @@ img {
 
     .hero-name {
         font-size: 2.5rem;
+    }
+
+    .hero-social {
+        width: 44px;
+        height: 44px;
     }
 
     .about-cards {
