@@ -1,0 +1,364 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>The Art of Retardmaxxing — Jay Hua</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --matcha: #6fbf73;
+            --matcha-light: #98d89b;
+            --matcha-dark: #4a8a4d;
+            --matcha-glow: rgba(111, 191, 115, 0.18);
+            --peach: #f4a583;
+            --peach-light: #fbc4ab;
+            --lilac: #b8a9e8;
+            --bg-primary: #1a2220;
+            --bg-secondary: #1f2926;
+            --bg-glass: rgba(111, 191, 115, 0.04);
+            --text-primary: #e8ede9;
+            --text-secondary: #a0b0a3;
+            --text-muted: #6b7f6e;
+            --border-color: rgba(111, 191, 115, 0.1);
+            --font-main: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            --font-mono: 'JetBrains Mono', monospace;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            font-family: var(--font-main);
+            background: var(--bg-primary);
+            color: var(--text-primary);
+            line-height: 1.7;
+            -webkit-font-smoothing: antialiased;
+        }
+
+        a { color: var(--matcha-light); text-decoration: none; transition: 0.3s; }
+        a:hover { color: var(--peach-light); }
+
+        /* Navigation */
+        .navbar {
+            position: fixed;
+            top: 0; left: 0; right: 0;
+            z-index: 1000;
+            padding: 16px 0;
+            background: rgba(26, 34, 32, 0.92);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .nav-container {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 0 24px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .nav-logo {
+            font-size: 1.25rem;
+            font-weight: 700;
+            background: linear-gradient(135deg, var(--matcha) 0%, var(--lilac) 60%, var(--peach) 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .nav-back {
+            font-size: 0.85rem;
+            color: var(--text-secondary);
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .nav-back:hover { color: var(--matcha-light); }
+
+        /* Article Header */
+        .article-header {
+            padding: 140px 0 48px;
+            background: var(--bg-secondary);
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 0 24px;
+        }
+
+        .article-tag {
+            display: inline-block;
+            font-size: 0.65rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.08em;
+            padding: 4px 12px;
+            border-radius: 100px;
+            background: var(--matcha-glow);
+            color: var(--matcha);
+            margin-bottom: 16px;
+        }
+
+        .article-header h1 {
+            font-size: 2.5rem;
+            font-weight: 700;
+            letter-spacing: -0.02em;
+            line-height: 1.15;
+            margin-bottom: 16px;
+            background: linear-gradient(135deg, var(--text-primary) 0%, var(--matcha-light) 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .article-meta {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            font-size: 0.85rem;
+            color: var(--text-muted);
+        }
+
+        .article-meta span {
+            font-family: var(--font-mono);
+            font-size: 0.8rem;
+        }
+
+        .article-author {
+            color: var(--text-secondary);
+        }
+
+        /* Article Body */
+        .article-body {
+            padding: 48px 0 80px;
+        }
+
+        .article-body p {
+            color: var(--text-secondary);
+            font-size: 1.05rem;
+            line-height: 1.8;
+            margin-bottom: 24px;
+        }
+
+        .article-body .lead {
+            font-size: 1.15rem;
+        }
+
+        .article-body h2 {
+            font-size: 1.5rem;
+            font-weight: 600;
+            margin-top: 40px;
+            margin-bottom: 16px;
+            color: var(--text-primary);
+        }
+
+        .article-body h2::before {
+            content: '';
+            display: inline-block;
+            width: 4px;
+            height: 20px;
+            background: var(--matcha);
+            border-radius: 2px;
+            margin-right: 12px;
+            vertical-align: middle;
+        }
+
+        .article-body strong {
+            color: var(--text-primary);
+            font-weight: 600;
+        }
+
+        .article-body em {
+            color: var(--matcha-light);
+            font-style: italic;
+        }
+
+        .article-body ul, .article-body ol {
+            margin-bottom: 24px;
+            padding-left: 24px;
+            color: var(--text-secondary);
+        }
+
+        .article-body li {
+            margin-bottom: 8px;
+            font-size: 1.05rem;
+            line-height: 1.7;
+        }
+
+        .article-body li::marker {
+            color: var(--matcha);
+        }
+
+        /* Pullquote */
+        .pullquote {
+            margin: 40px 0;
+            padding: 28px 32px;
+            border-left: 3px solid var(--matcha);
+            background: var(--bg-glass);
+            border-radius: 0 14px 14px 0;
+            font-size: 1.15rem;
+            font-style: italic;
+            color: var(--text-primary);
+            line-height: 1.7;
+        }
+
+        /* Tweet Embed */
+        .tweet-section {
+            margin: 40px 0;
+            padding: 32px;
+            background: var(--bg-glass);
+            border: 1px solid var(--border-color);
+            border-radius: 14px;
+        }
+
+        .tweet-section-label {
+            font-size: 0.7rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.08em;
+            color: var(--text-muted);
+            margin-bottom: 16px;
+            display: block;
+        }
+
+        .tweet-embed-wrapper {
+            display: flex;
+            justify-content: center;
+        }
+
+        /* Override Twitter widget max-width */
+        .twitter-tweet {
+            margin: 0 auto !important;
+        }
+
+        /* Divider */
+        .divider {
+            width: 60px;
+            height: 3px;
+            background: linear-gradient(90deg, var(--matcha) 0%, var(--matcha-light) 100%);
+            border-radius: 2px;
+            margin: 48px auto;
+        }
+
+        /* Footer navigation */
+        .article-footer {
+            padding: 40px 0;
+            border-top: 1px solid var(--border-color);
+            background: var(--bg-secondary);
+        }
+
+        .footer-nav {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .footer-nav a {
+            font-size: 0.9rem;
+            color: var(--text-secondary);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .footer-nav a:hover { color: var(--matcha-light); }
+
+        @media (max-width: 600px) {
+            .article-header h1 { font-size: 1.8rem; }
+            .article-body p { font-size: 0.95rem; }
+            .pullquote { padding: 20px 24px; font-size: 1rem; }
+            .tweet-section { padding: 20px; }
+        }
+    </style>
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="navbar">
+        <div class="nav-container">
+            <a href="../index.html" class="nav-logo">JH</a>
+            <a href="../articles.html" class="nav-back">&larr; All Articles</a>
+        </div>
+    </nav>
+
+    <!-- Article Header -->
+    <header class="article-header">
+        <div class="container">
+            <span class="article-tag">Life</span>
+            <h1>The Art of Retardmaxxing</h1>
+            <div class="article-meta">
+                <span class="article-author">Jay Hua</span>
+                <span>Mar 15, 2026</span>
+            </div>
+        </div>
+    </header>
+
+    <!-- Article Body -->
+    <main class="article-body">
+        <div class="container">
+            <p class="lead">Read this X article. I couldn't figure out how to embed the full article here, but please, read this. It's a delightful piece of writing.</p>
+
+            <!-- Embedded Tweet -->
+            <div class="tweet-section">
+                <span class="tweet-section-label">The post that started it all</span>
+                <div class="tweet-embed-wrapper">
+                    <blockquote class="twitter-tweet" data-theme="dark" data-conversation="none" data-dnt="true">
+                        <p lang="zxx" dir="ltr"><a href="https://t.co/su1s5SECEO">https://t.co/su1s5SECEO</a></p>
+                        &mdash; Elisha Long (@ElishaDLong)
+                        <a href="https://twitter.com/ElishaDLong/status/2013381350275920006?ref_src=twsrc%5Etfw">January 19, 2026</a>
+                    </blockquote>
+                </div>
+            </div>
+
+            <p>We live in an era where information is infinite, AI can think faster than us, and everyone is optimizing. Everyone is playing it safe, hedging their bets, running the numbers. But here's the thing: <strong>the biggest wins in life don't come from spreadsheets.</strong> They come from doing the thing that no rational person would do.</p>
+
+            <h2>What Is Retardmaxxing?</h2>
+
+            <p>Retardmaxxing is the art of leaning into bold, unconventional moves — the ones that look stupid on paper but feel right in your gut. It's not about being reckless. It's about having the courage to ignore the noise, trust your instincts, and go all-in when the world tells you to diversify.</p>
+
+            <div class="pullquote">
+                "The reasonable man adapts himself to the world; the unreasonable one persists in trying to adapt the world to himself. Therefore all progress depends on the unreasonable man." — George Bernard Shaw
+            </div>
+
+            <h2>Why Now?</h2>
+
+            <p>AI is making everyone smarter, but it's also making everyone the <em>same kind of smart</em>. When every analyst has the same models, every founder reads the same playbooks, and every investor runs the same screens — the edge disappears. The new edge is being the person who zigs when everyone else zags.</p>
+
+            <p>The people who win aren't the ones who wait for perfect information. They're the ones who move fast, break things (including their own assumptions), and embrace the chaos.</p>
+
+            <h2>The Rules of Retardmaxxing</h2>
+
+            <ul>
+                <li><strong>Conviction over consensus.</strong> If everyone agrees with your bet, it's not a bet — it's a crowd.</li>
+                <li><strong>Speed over perfection.</strong> A fast, imperfect move beats a slow, perfect one.</li>
+                <li><strong>Asymmetric upside.</strong> Look for situations where you can lose a little but gain a lot.</li>
+                <li><strong>Ignore sunk costs.</strong> If it's not working, kill it and move on. No ego.</li>
+                <li><strong>Embrace looking stupid.</strong> The best ideas look dumb until they don't.</li>
+            </ul>
+
+            <div class="divider"></div>
+
+            <p>This isn't financial advice. This isn't life advice. This is a mindset. In a world where AI handles the thinking, sometimes the most powerful thing you can do is <em>stop thinking and start doing.</em></p>
+
+            <p>So go ahead. Be unreasonable. Be bold. Be a little retarded. The world rewards it more than you think.</p>
+        </div>
+    </main>
+
+    <!-- Footer Nav -->
+    <footer class="article-footer">
+        <div class="container">
+            <div class="footer-nav">
+                <a href="../articles.html">&larr; Back to Articles</a>
+                <a href="../index.html">Home</a>
+            </div>
+        </div>
+    </footer>
+
+    <script async src="https://platform.twitter.com/widgets.js" charset="utf-8"></script>
+</body>
+</html>
