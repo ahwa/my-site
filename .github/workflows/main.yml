@@ -1,0 +1,31 @@
+name: Deploy Reports to GitHub Pages
+
+on:
+  push:
+    branches:
+      - main   # triggers when you push to main
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Upload folder as Pages artifact
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: ./reports # folder to publish to GitHub Pages
+
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4
