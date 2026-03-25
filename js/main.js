@@ -104,6 +104,40 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
+    // --- Language toggle on report cards ---
+    document.querySelectorAll('.lang-btn').forEach(btn => {
+        btn.addEventListener('click', (e) => {
+            e.preventDefault();
+            e.stopPropagation();
+
+            const cardId = btn.dataset.card;
+            const lang = btn.dataset.lang;
+
+            // Update active button
+            document.querySelectorAll(`.lang-btn[data-card="${cardId}"]`).forEach(b => b.classList.remove('active'));
+            btn.classList.add('active');
+
+            // Update title
+            const title = document.querySelector(`.report-title[data-card="${cardId}"]`);
+            if (title && title.dataset[lang]) {
+                title.textContent = title.dataset[lang];
+            }
+
+            // Update excerpt
+            const excerpt = document.querySelector(`.report-excerpt[data-card="${cardId}"]`);
+            if (excerpt && excerpt.dataset[lang]) {
+                excerpt.textContent = excerpt.dataset[lang];
+            }
+
+            // Update link
+            const link = document.querySelector(`.report-link[data-card="${cardId}"]`);
+            if (link && link.dataset[lang]) {
+                link.href = link.dataset[lang];
+                link.textContent = lang === 'zh' ? '阅读报告 →' : 'Read Report →';
+            }
+        });
+    });
+
     // --- Smooth scroll for anchor links ---
     document.querySelectorAll('a[href^="#"]').forEach(anchor => {
         anchor.addEventListener('click', (e) => {

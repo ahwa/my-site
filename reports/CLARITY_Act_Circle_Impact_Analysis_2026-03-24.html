@@ -1,0 +1,826 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>CLARITY Act Impact on Circle (CRCL) Valuation — March 24, 2026</title>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
+<style>
+  :root {
+    --navy: #1a2332;
+    --dark-blue: #2c3e50;
+    --accent: #3498db;
+    --accent-dark: #2980b9;
+    --red: #e74c3c;
+    --green: #27ae60;
+    --orange: #f39c12;
+    --light-bg: #f8f9fa;
+    --border: #dee2e6;
+    --text: #2c3e50;
+    --text-light: #6c757d;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: 'Segoe UI', -apple-system, BlinkMacSystemFont, sans-serif; color: var(--text); line-height: 1.65; background: #fff; }
+  .container { max-width: 1100px; margin: 0 auto; padding: 0 32px; }
+
+  /* Header */
+  .report-header { background: linear-gradient(135deg, var(--navy) 0%, var(--dark-blue) 100%); color: white; padding: 48px 0 40px; }
+  .report-header h1 { font-size: 28px; font-weight: 700; margin-bottom: 8px; }
+  .report-header .subtitle { font-size: 16px; color: #94a3b8; margin-bottom: 4px; }
+  .report-header .date { font-size: 14px; color: #64748b; }
+  .badge { display: inline-block; padding: 3px 10px; border-radius: 4px; font-size: 12px; font-weight: 600; margin-right: 8px; }
+  .badge-red { background: rgba(231,76,60,0.2); color: #ff6b6b; }
+  .badge-orange { background: rgba(243,156,18,0.2); color: #f5b041; }
+  .badge-blue { background: rgba(52,152,219,0.2); color: #5dade2; }
+
+  /* Alert Box */
+  .alert-box { background: #fef3cd; border-left: 4px solid var(--orange); padding: 16px 20px; margin: 28px 0; border-radius: 0 6px 6px 0; }
+  .alert-box strong { color: #856404; }
+  .alert-box p { color: #664d03; font-size: 14px; margin-top: 4px; }
+
+  /* Sections */
+  .section { padding: 36px 0; border-bottom: 1px solid var(--border); }
+  .section:last-child { border-bottom: none; }
+  .section h2 { font-size: 22px; color: var(--navy); margin-bottom: 16px; padding-bottom: 8px; border-bottom: 2px solid var(--accent); display: inline-block; }
+  .section h3 { font-size: 17px; color: var(--dark-blue); margin: 20px 0 10px; }
+  .section p { margin-bottom: 12px; font-size: 15px; }
+
+  /* Key Metrics */
+  .metrics-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px; margin: 24px 0; }
+  .metric-card { background: var(--light-bg); border-radius: 8px; padding: 18px; text-align: center; border: 1px solid var(--border); }
+  .metric-card .label { font-size: 12px; color: var(--text-light); text-transform: uppercase; letter-spacing: 0.5px; }
+  .metric-card .value { font-size: 26px; font-weight: 700; color: var(--navy); margin: 6px 0; }
+  .metric-card .change { font-size: 13px; }
+  .metric-card .change.negative { color: var(--red); }
+  .metric-card .change.positive { color: var(--green); }
+
+  /* Tables */
+  table { width: 100%; border-collapse: collapse; margin: 16px 0; font-size: 14px; }
+  th { background: var(--navy); color: white; padding: 10px 14px; text-align: left; font-weight: 600; font-size: 13px; }
+  td { padding: 10px 14px; border-bottom: 1px solid var(--border); }
+  tr:nth-child(even) { background: var(--light-bg); }
+  tr:hover { background: #e8f4f8; }
+  .num { text-align: right; font-variant-numeric: tabular-nums; }
+  .highlight-row { background: #fff3cd !important; font-weight: 600; }
+
+  /* Charts */
+  .chart-container { max-width: 600px; margin: 20px auto; }
+  .chart-row { display: grid; grid-template-columns: 1fr 1fr; gap: 24px; margin: 20px 0; }
+  .chart-box { background: var(--light-bg); border-radius: 8px; padding: 20px; border: 1px solid var(--border); }
+  .chart-box h4 { font-size: 14px; color: var(--text-light); margin-bottom: 12px; text-align: center; }
+
+  /* Scenario boxes */
+  .scenario-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; margin: 20px 0; }
+  .scenario-card { border-radius: 8px; padding: 20px; }
+  .scenario-card.bull { background: #d4edda; border: 1px solid #c3e6cb; }
+  .scenario-card.base { background: #fff3cd; border: 1px solid #ffeeba; }
+  .scenario-card.bear { background: #f8d7da; border: 1px solid #f5c6cb; }
+  .scenario-card h4 { font-size: 15px; margin-bottom: 8px; }
+  .scenario-card .price { font-size: 28px; font-weight: 700; margin: 8px 0; }
+  .scenario-card .detail { font-size: 13px; color: var(--text-light); line-height: 1.5; }
+
+  /* Callout */
+  .callout { background: #e8f4f8; border-left: 4px solid var(--accent); padding: 16px 20px; margin: 20px 0; border-radius: 0 6px 6px 0; }
+  .callout p { font-size: 14px; margin: 0; }
+
+  /* Footer */
+  .report-footer { background: var(--light-bg); padding: 24px 0; font-size: 12px; color: var(--text-light); margin-top: 24px; border-top: 1px solid var(--border); }
+  .report-footer a { color: var(--accent); text-decoration: none; }
+
+  /* Sources */
+  .sources { font-size: 13px; }
+  .sources a { color: var(--accent); text-decoration: none; }
+  .sources a:hover { text-decoration: underline; }
+  .sources li { margin-bottom: 4px; }
+
+  @media (max-width: 768px) {
+    .metrics-grid { grid-template-columns: repeat(2, 1fr); }
+    .chart-row { grid-template-columns: 1fr; }
+    .scenario-grid { grid-template-columns: 1fr; }
+  }
+</style>
+</head>
+<body>
+
+<div class="report-header">
+  <div class="container">
+    <div style="margin-bottom: 12px;">
+      <span class="badge badge-red">HIGH IMPACT</span>
+      <span class="badge badge-orange">REGULATORY</span>
+      <span class="badge badge-blue">CRCL</span>
+    </div>
+    <h1>CLARITY Act: Impact on Circle (CRCL) Valuation</h1>
+    <div class="subtitle">Stablecoin Yield Restriction — Quantitative Impact Assessment</div>
+    <div class="date">March 24, 2026 &bull; 11:00 AM ET</div>
+  </div>
+</div>
+
+<div class="container">
+
+  <!-- ALERT -->
+  <div class="alert-box">
+    <strong>Market Event:</strong>
+    <p>Circle (CRCL) shares fell ~18% and Coinbase (COIN) dropped ~8% on March 24 after the latest CLARITY Act draft text revealed a ban on passive stablecoin balance rewards, including structures "economically equivalent to interest." The bill allows narrow activity-based rewards only.</p>
+  </div>
+
+  <!-- EXECUTIVE SUMMARY -->
+  <div class="section">
+    <h2>Executive Summary</h2>
+    <p>The CLARITY Act's revised language on stablecoin yield threatens Circle's core growth narrative. While <strong>Circle's reserve income itself is not directly curtailed</strong> — the company earns interest on USDC-backing Treasuries regardless of regulation — the bill's prohibition on passing yield to holders removes a key demand driver for USDC. The primary transmission mechanism is through <strong>slower USDC circulation growth</strong> and a potential renegotiation of the <strong>Coinbase distribution arrangement</strong>, which currently absorbs ~63% of Circle's gross reserve income.</p>
+
+    <div class="metrics-grid">
+      <div class="metric-card">
+        <div class="label">CRCL Price (Pre-News)</div>
+        <div class="value">$126</div>
+        <div class="change">Mar 23 close</div>
+      </div>
+      <div class="metric-card">
+        <div class="label">Intraday Drop</div>
+        <div class="value">-18%</div>
+        <div class="change negative">~$103 intraday</div>
+      </div>
+      <div class="metric-card">
+        <div class="label">Market Cap</div>
+        <div class="value">$31B</div>
+        <div class="change">~247M shares out</div>
+      </div>
+      <div class="metric-card">
+        <div class="label">FY25 Reserve Inc.</div>
+        <div class="value">$2.64B</div>
+        <div class="change positive">+59% YoY</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- CLARITY ACT ANALYSIS -->
+  <div class="section">
+    <h2>1. CLARITY Act: What Changed</h2>
+    <p>On March 22-23, 2026, senators released the revised CLARITY Act text following a compromise brokered by Senators Tillis (R-NC) and Alsobrooks (D-MD), backed by the White House. The stablecoin yield provisions are the key new element that stalled the market structure bill for months.</p>
+
+    <h3>Key Provisions</h3>
+    <table>
+      <tr><th style="width:30%">Provision</th><th>Detail</th><th style="width:15%">Impact</th></tr>
+      <tr>
+        <td><strong>Passive Yield Ban</strong></td>
+        <td>Prohibits digital asset service providers (exchanges, brokers, affiliates) from offering yield on stablecoin <em>balances</em> — including structures "economically or functionally equivalent to bank interest"</td>
+        <td class="num" style="color:var(--red);font-weight:600">HIGH</td>
+      </tr>
+      <tr>
+        <td><strong>Activity-Based Rewards</strong></td>
+        <td>Loyalty programs, promotions, and subscription-based rewards tied to stablecoin <em>activity</em> (payments, trading) remain permitted under defined conditions</td>
+        <td class="num" style="color:var(--orange);font-weight:600">MEDIUM</td>
+      </tr>
+      <tr>
+        <td><strong>Anti-Evasion Rules</strong></td>
+        <td>SEC, CFTC, and Treasury to jointly define permissible rewards and anti-evasion rules within 12 months</td>
+        <td class="num" style="color:var(--orange);font-weight:600">MEDIUM</td>
+      </tr>
+      <tr>
+        <td><strong>DeFi Lending Carveout</strong></td>
+        <td>Yield generated by third-party platforms (e.g., Morpho, Aave) from lending is NOT restricted — the ban targets issuer/affiliate-generated yield</td>
+        <td class="num" style="color:var(--green);font-weight:600">MITIGATING</td>
+      </tr>
+    </table>
+
+    <div class="callout">
+      <p><strong>Critical distinction:</strong> The bill does NOT prohibit Circle from earning interest on its reserves. It prohibits <em>passing that yield to stablecoin holders</em>. Circle's revenue is generated regardless — the risk is to <strong>USDC demand growth</strong>, not to the revenue mechanism itself.</p>
+    </div>
+
+    <h3>Legislative Timeline</h3>
+    <p>The GENIUS Act (signed July 18, 2025) already contains Section 4(c) prohibiting issuer-paid interest. The CLARITY Act extends this to affiliates and third parties acting on behalf of issuers. OCC rulemaking is expected by late 2026 to early 2027. The industry's legal challenge window is likely 6-12 months from final rule publication.</p>
+  </div>
+
+  <!-- CIRCLE FINANCIAL PROFILE -->
+  <div class="section">
+    <h2>2. Circle Financial Profile (FY2025 Actuals)</h2>
+    <p>Circle's business model is straightforward and highly concentrated: ~96% of revenue comes from interest earned on USDC-backing reserves (short-term Treasuries and overnight repos managed by BlackRock via the Circle Reserve Fund, USDXX).</p>
+
+    <table>
+      <tr><th>Metric</th><th class="num">FY2024</th><th class="num">FY2025</th><th class="num">YoY Change</th></tr>
+      <tr>
+        <td>Total Revenue + Reserve Income</td>
+        <td class="num">$1.68B</td>
+        <td class="num">$2.75B</td>
+        <td class="num" style="color:var(--green)">+64%</td>
+      </tr>
+      <tr>
+        <td>&nbsp;&nbsp;&nbsp;Reserve Income</td>
+        <td class="num">$1.66B</td>
+        <td class="num">$2.64B</td>
+        <td class="num" style="color:var(--green)">+59%</td>
+      </tr>
+      <tr>
+        <td>&nbsp;&nbsp;&nbsp;Other Revenue</td>
+        <td class="num">$15M</td>
+        <td class="num">$110M</td>
+        <td class="num" style="color:var(--green)">+633%</td>
+      </tr>
+      <tr>
+        <td>Distribution Costs (Coinbase share)</td>
+        <td class="num">~$1.01B</td>
+        <td class="num">$1.66B</td>
+        <td class="num" style="color:var(--red)">+65%</td>
+      </tr>
+      <tr class="highlight-row">
+        <td>Net Revenue (after distribution)</td>
+        <td class="num">~$670M</td>
+        <td class="num">~$1.09B</td>
+        <td class="num" style="color:var(--green)">+63%</td>
+      </tr>
+      <tr>
+        <td>Compensation & OpEx</td>
+        <td class="num">—</td>
+        <td class="num">$845M+</td>
+        <td class="num">—</td>
+      </tr>
+      <tr>
+        <td>Net Income (Loss)</td>
+        <td class="num">—</td>
+        <td class="num">($70M)</td>
+        <td class="num" style="color:var(--red)">Net loss</td>
+      </tr>
+      <tr>
+        <td>USDC in Circulation (YE)</td>
+        <td class="num">$43.8B</td>
+        <td class="num">$75.3B</td>
+        <td class="num" style="color:var(--green)">+72%</td>
+      </tr>
+    </table>
+
+    <div class="chart-row">
+      <div class="chart-box">
+        <h4>Revenue Composition (FY2025)</h4>
+        <canvas id="revenueChart"></canvas>
+      </div>
+      <div class="chart-box">
+        <h4>Revenue Waterfall: Gross → Net</h4>
+        <canvas id="waterfallChart"></canvas>
+      </div>
+    </div>
+
+    <h3>The Coinbase Revenue Share — Circle's Structural Burden</h3>
+    <p>The Coinbase arrangement is critical to understanding Circle's economics. Under the current deal, Coinbase retains <strong>100% of the reserve income generated from USDC held on its platform</strong> and splits income from other distribution channels 50/50 with Circle. In FY2025, distribution costs of $1.66B represented <strong>63% of gross reserve income</strong> — meaning Circle keeps only ~37 cents of every dollar earned on reserves.</p>
+    <p>This arrangement was the price of securing Coinbase's distribution network, but it means Circle operates with structurally thin margins despite managing $75B+ in assets. FY2025 ended in a <strong>net loss of $70M</strong> even with $2.75B in top-line revenue.</p>
+  </div>
+
+  <!-- IMPACT ANALYSIS -->
+  <div class="section">
+    <h2>3. Quantitative Impact Analysis</h2>
+
+    <h3>Transmission Channels</h3>
+    <p>The CLARITY Act impacts Circle through three interconnected channels:</p>
+
+    <table>
+      <tr><th>Channel</th><th>Mechanism</th><th class="num">Estimated Impact</th></tr>
+      <tr>
+        <td><strong>1. USDC Demand Growth Slowdown</strong></td>
+        <td>Without yield incentives, retail/institutional holders have less reason to hold USDC vs. bank deposits or money market funds. Coinbase's USDC rewards program (4.1-4.5% APY) was a major adoption driver.</td>
+        <td class="num">-15% to -30% growth rate reduction</td>
+      </tr>
+      <tr>
+        <td><strong>2. Coinbase Distribution Renegotiation</strong></td>
+        <td>If Coinbase can no longer pay USDC rewards, it may demand a lower revenue share (no longer subsidizing user yield). Alternatively, Coinbase retains more margin by not paying out rewards — mixed impact.</td>
+        <td class="num">-5% to +5% on net revenue</td>
+      </tr>
+      <tr>
+        <td><strong>3. Competitive Repositioning</strong></td>
+        <td>Tether (USDT), which has never offered direct yield, faces no incremental disadvantage. USDC's regulatory-compliance premium narrows. Simultaneously, Tether announced Big Four audit in March 2026, closing the trust gap.</td>
+        <td class="num">-5% to -10% market share risk</td>
+      </tr>
+    </table>
+
+    <h3>USDC Circulation Growth Scenarios</h3>
+    <p>USDC circulation is the single most important driver of Circle's valuation. We model three scenarios for FY2026E average USDC in circulation, based on different regulatory outcomes:</p>
+
+    <table>
+      <tr>
+        <th>Scenario</th>
+        <th class="num">FY2026E Avg USDC Circ.</th>
+        <th class="num">YoY Growth</th>
+        <th class="num">Effective Reserve Yield</th>
+        <th class="num">Gross Reserve Income</th>
+      </tr>
+      <tr>
+        <td><strong style="color:var(--green)">Bull:</strong> Bill stalls or is watered down</td>
+        <td class="num">$105B</td>
+        <td class="num">+50%</td>
+        <td class="num">3.9%</td>
+        <td class="num">$4.10B</td>
+      </tr>
+      <tr class="highlight-row">
+        <td><strong style="color:var(--orange)">Base:</strong> Activity-based loophole survives</td>
+        <td class="num">$87B</td>
+        <td class="num">+30%</td>
+        <td class="num">3.7%</td>
+        <td class="num">$3.22B</td>
+      </tr>
+      <tr>
+        <td><strong style="color:var(--red)">Bear:</strong> Strict enforcement, no yield pass-through</td>
+        <td class="num">$73B</td>
+        <td class="num">+12%</td>
+        <td class="num">3.5%</td>
+        <td class="num">$2.56B</td>
+      </tr>
+    </table>
+
+    <p style="font-size:13px;color:var(--text-light)"><em>Assumptions: FY2025 avg USDC ~$58B (mid-year weighted); effective yield declines 30-50bps as Fed cuts 25bps in 2026 (dot plot median) and mix shifts toward lower-yielding overnight repos. FY2026 guidance: other revenue $150-170M, adj. OpEx $570-585M.</em></p>
+
+    <h3>Full P&L Scenario Model (FY2026E)</h3>
+    <table>
+      <tr>
+        <th>Line Item</th>
+        <th class="num" style="color:var(--green)">Bull Case</th>
+        <th class="num" style="color:var(--orange)">Base Case</th>
+        <th class="num" style="color:var(--red)">Bear Case</th>
+      </tr>
+      <tr>
+        <td>Gross Reserve Income</td>
+        <td class="num">$4,100M</td>
+        <td class="num">$3,220M</td>
+        <td class="num">$2,555M</td>
+      </tr>
+      <tr>
+        <td>Other Revenue</td>
+        <td class="num">$170M</td>
+        <td class="num">$160M</td>
+        <td class="num">$140M</td>
+      </tr>
+      <tr>
+        <td><strong>Total Revenue</strong></td>
+        <td class="num"><strong>$4,270M</strong></td>
+        <td class="num"><strong>$3,380M</strong></td>
+        <td class="num"><strong>$2,695M</strong></td>
+      </tr>
+      <tr>
+        <td>Distribution Costs (~60-63%)</td>
+        <td class="num">($2,560M)</td>
+        <td class="num">($1,995M)</td>
+        <td class="num">($1,510M)</td>
+      </tr>
+      <tr class="highlight-row">
+        <td>Net Revenue</td>
+        <td class="num">$1,710M</td>
+        <td class="num">$1,385M</td>
+        <td class="num">$1,185M</td>
+      </tr>
+      <tr>
+        <td>Adj. Operating Expenses</td>
+        <td class="num">($580M)</td>
+        <td class="num">($578M)</td>
+        <td class="num">($570M)</td>
+      </tr>
+      <tr class="highlight-row">
+        <td><strong>Adj. Operating Income</strong></td>
+        <td class="num" style="color:var(--green)"><strong>$1,130M</strong></td>
+        <td class="num" style="color:var(--orange)"><strong>$807M</strong></td>
+        <td class="num" style="color:var(--red)"><strong>$615M</strong></td>
+      </tr>
+      <tr>
+        <td>SBC & Other Non-Cash (~$300M est.)</td>
+        <td class="num">($300M)</td>
+        <td class="num">($300M)</td>
+        <td class="num">($300M)</td>
+      </tr>
+      <tr>
+        <td><strong>GAAP Operating Income</strong></td>
+        <td class="num"><strong>$830M</strong></td>
+        <td class="num"><strong>$507M</strong></td>
+        <td class="num"><strong>$315M</strong></td>
+      </tr>
+      <tr>
+        <td>Taxes (~21%)</td>
+        <td class="num">($174M)</td>
+        <td class="num">($106M)</td>
+        <td class="num">($66M)</td>
+      </tr>
+      <tr class="highlight-row">
+        <td><strong>Est. Net Income</strong></td>
+        <td class="num" style="color:var(--green)"><strong>$656M</strong></td>
+        <td class="num" style="color:var(--orange)"><strong>$401M</strong></td>
+        <td class="num" style="color:var(--red)"><strong>$249M</strong></td>
+      </tr>
+      <tr>
+        <td>EPS (247M shares)</td>
+        <td class="num">$2.66</td>
+        <td class="num">$1.62</td>
+        <td class="num">$1.01</td>
+      </tr>
+    </table>
+
+    <div class="chart-row">
+      <div class="chart-box">
+        <h4>FY2026E Net Income by Scenario ($M)</h4>
+        <canvas id="scenarioIncomeChart"></canvas>
+      </div>
+      <div class="chart-box">
+        <h4>USDC Circulation Growth Trajectory ($B)</h4>
+        <canvas id="usdcGrowthChart"></canvas>
+      </div>
+    </div>
+  </div>
+
+  <!-- VALUATION -->
+  <div class="section">
+    <h2>4. Valuation Impact</h2>
+
+    <h3>Implied Valuation Across Scenarios</h3>
+    <p>We derive implied share prices using two approaches: a forward P/E multiple (applied to FY2026E earnings) and an EV/Net Revenue multiple, benchmarked against fintech and financial infrastructure peers.</p>
+
+    <table>
+      <tr>
+        <th>Metric</th>
+        <th class="num" style="color:var(--green)">Bull</th>
+        <th class="num" style="color:var(--orange)">Base</th>
+        <th class="num" style="color:var(--red)">Bear</th>
+      </tr>
+      <tr>
+        <td>FY2026E EPS</td>
+        <td class="num">$2.66</td>
+        <td class="num">$1.62</td>
+        <td class="num">$1.01</td>
+      </tr>
+      <tr>
+        <td>Forward P/E: 45x (Growth premium)</td>
+        <td class="num">$120</td>
+        <td class="num">$73</td>
+        <td class="num">$45</td>
+      </tr>
+      <tr>
+        <td>Forward P/E: 55x (Fintech premium)</td>
+        <td class="num">$146</td>
+        <td class="num">$89</td>
+        <td class="num">$56</td>
+      </tr>
+      <tr>
+        <td>Forward P/E: 65x (Crypto ecosystem premium)</td>
+        <td class="num">$173</td>
+        <td class="num">$105</td>
+        <td class="num">$66</td>
+      </tr>
+      <tr style="border-top: 2px solid var(--navy)">
+        <td>FY2026E Net Revenue</td>
+        <td class="num">$1,710M</td>
+        <td class="num">$1,385M</td>
+        <td class="num">$1,185M</td>
+      </tr>
+      <tr>
+        <td>EV/Net Revenue: 18x</td>
+        <td class="num">$125</td>
+        <td class="num">$101</td>
+        <td class="num">$86</td>
+      </tr>
+      <tr>
+        <td>EV/Net Revenue: 22x</td>
+        <td class="num">$152</td>
+        <td class="num">$123</td>
+        <td class="num">$106</td>
+      </tr>
+    </table>
+
+    <div class="scenario-grid">
+      <div class="scenario-card bull">
+        <h4>Bull Case</h4>
+        <div class="price">$125 – $173</div>
+        <div class="detail">Bill stalls or is substantially watered down. Activity-based rewards remain broad. USDC growth continues at 50%+. Coinbase deal stable. Multiple re-rates toward fintech peers.</div>
+      </div>
+      <div class="scenario-card base">
+        <h4>Base Case</h4>
+        <div class="price">$89 – $123</div>
+        <div class="detail">Bill passes with narrow activity-based loophole. Growth moderates to ~30%. Coinbase may restructure rewards as subscription-only. Moderate multiple compression.</div>
+      </div>
+      <div class="scenario-card bear">
+        <h4>Bear Case</h4>
+        <div class="price">$45 – $86</div>
+        <div class="detail">Strict enforcement closes all yield pass-through. USDC growth stalls at ~12%. Tether gains share with audit milestone. Significant multiple compression.</div>
+      </div>
+    </div>
+
+    <div class="callout">
+      <p><strong>Current consensus target: ~$127.</strong> Analyst range: $50 (bear) to $280 (bull). The 18% drop to ~$103 on March 24 prices in approximately the base case scenario at a moderate multiple. Further downside exists if the bear case materializes, but the market appears to have partially priced the risk.</p>
+    </div>
+  </div>
+
+  <!-- SENSITIVITY -->
+  <div class="section">
+    <h2>5. Interest Rate Sensitivity</h2>
+    <p>Circle's valuation carries a double sensitivity: USDC circulation volume AND the risk-free rate. The table below shows estimated FY2026 gross reserve income ($M) under varying combinations.</p>
+
+    <table>
+      <tr>
+        <th>Avg USDC Circ. ↓ / Eff. Yield →</th>
+        <th class="num">3.0%</th>
+        <th class="num">3.5%</th>
+        <th class="num">4.0%</th>
+        <th class="num">4.5%</th>
+      </tr>
+      <tr>
+        <td><strong>$60B</strong></td>
+        <td class="num">$1,800</td>
+        <td class="num">$2,100</td>
+        <td class="num">$2,400</td>
+        <td class="num">$2,700</td>
+      </tr>
+      <tr>
+        <td><strong>$75B</strong></td>
+        <td class="num">$2,250</td>
+        <td class="num">$2,625</td>
+        <td class="num">$3,000</td>
+        <td class="num">$3,375</td>
+      </tr>
+      <tr class="highlight-row">
+        <td><strong>$87B (Base)</strong></td>
+        <td class="num">$2,610</td>
+        <td class="num">$3,045</td>
+        <td class="num">$3,480</td>
+        <td class="num">$3,915</td>
+      </tr>
+      <tr>
+        <td><strong>$100B</strong></td>
+        <td class="num">$3,000</td>
+        <td class="num">$3,500</td>
+        <td class="num">$4,000</td>
+        <td class="num">$4,500</td>
+      </tr>
+      <tr>
+        <td><strong>$120B</strong></td>
+        <td class="num">$3,600</td>
+        <td class="num">$4,200</td>
+        <td class="num">$4,800</td>
+        <td class="num">$5,400</td>
+      </tr>
+    </table>
+    <p style="font-size:13px;color:var(--text-light)"><em>Current Fed Funds: 3.50-3.75%. Dot plot median: one 25bp cut in 2026. JPM sees no cuts in 2026, possible hike in 2027. Rate stability is net positive for Circle's near-term revenue.</em></p>
+
+    <div class="chart-container">
+      <canvas id="sensitivityChart"></canvas>
+    </div>
+  </div>
+
+  <!-- STRATEGIC CONSIDERATIONS -->
+  <div class="section">
+    <h2>6. Strategic Implications & Mitigants</h2>
+
+    <h3>Mitigating Factors</h3>
+    <table>
+      <tr><th>Factor</th><th>Detail</th></tr>
+      <tr>
+        <td><strong>DeFi yield unaffected</strong></td>
+        <td>Lending protocols (Morpho, Aave, Compound) can still offer yield on USDC. Coinbase already launched on-chain USDC lending at up to 10.8% APY via Morpho — this is NOT restricted.</td>
+      </tr>
+      <tr>
+        <td><strong>Activity-based rewards loophole</strong></td>
+        <td>The bill permits loyalty/promotion/subscription rewards tied to stablecoin usage. Coinbase One ($4.99/mo) already restructured USDC rewards under a subscription model in Dec 2025 — a potential workaround.</td>
+      </tr>
+      <tr>
+        <td><strong>Regulatory moat deepens</strong></td>
+        <td>Compliance costs rise for all stablecoin issuers. Circle, as the most regulated issuer (with a US entity, state licenses, and Big Four audit), may actually benefit from higher barriers to entry.</td>
+      </tr>
+      <tr>
+        <td><strong>Non-yield use cases growing</strong></td>
+        <td>USDC's cross-border payments, treasury management, and DeFi collateral use cases are yield-agnostic. USDC captured 64% of total stablecoin transaction volume in 2025.</td>
+      </tr>
+      <tr>
+        <td><strong>Other revenue diversification</strong></td>
+        <td>FY2026E other revenue guidance of $150-170M (up from $110M in FY25) suggests Circle is diversifying beyond pure reserve income.</td>
+      </tr>
+    </table>
+
+    <h3>Risk Factors</h3>
+    <table>
+      <tr><th>Risk</th><th>Detail</th></tr>
+      <tr>
+        <td><strong>Tether competitive threat</strong></td>
+        <td>Tether announced a Big Four audit in March 2026, closing its main trust deficit vs. USDC. Since USDT never offered yield, it faces zero incremental regulatory risk from this bill.</td>
+      </tr>
+      <tr>
+        <td><strong>Coinbase revenue share renegotiation</strong></td>
+        <td>If USDC rewards are curtailed, Coinbase's incentive to promote USDC diminishes. The 100% revenue share on Coinbase-held USDC may come under pressure — but in either direction.</td>
+      </tr>
+      <tr>
+        <td><strong>Interest rate path</strong></td>
+        <td>With 96% revenue concentration in reserve income, any acceleration in Fed rate cuts compresses Circle's top line independently of regulatory risk.</td>
+      </tr>
+      <tr>
+        <td><strong>Anti-evasion rules TBD</strong></td>
+        <td>The SEC/CFTC/Treasury have 12 months to define anti-evasion rules. The scope of what constitutes "economically equivalent to interest" remains unclear and could be interpreted broadly.</td>
+      </tr>
+    </table>
+  </div>
+
+  <!-- CONCLUSION -->
+  <div class="section">
+    <h2>7. Conclusion</h2>
+    <p>The CLARITY Act's stablecoin yield provisions represent a meaningful but manageable headwind for Circle. The ~18% stock drop on March 24 reflects the market's initial repricing of USDC growth expectations, but several mitigating factors — DeFi lending carveouts, activity-based rewards loopholes, and growing non-yield use cases — limit the downside.</p>
+    <p>Our base case fair value range of <strong>$89 to $123</strong> suggests the stock is approximately fairly valued at ~$103 post-drop, with asymmetric risk to the upside if the bill is watered down or activity-based rewards are interpreted broadly. The bear case of $45-$86 represents a tail risk if enforcement is strict and USDC growth stalls, while the bull case of $125-$173 applies if the bill fails entirely.</p>
+    <p>The key variable to monitor is the SEC/CFTC/Treasury rulemaking over the next 12 months — specifically, how broadly "economically equivalent to interest" is interpreted and whether Coinbase's subscription-based rewards model survives scrutiny.</p>
+
+    <div class="alert-box" style="background: #d1ecf1; border-color: var(--accent);">
+      <strong style="color: #0c5460;">Disclaimer:</strong>
+      <p style="color: #0c5460;">This analysis is for informational purposes only and does not constitute investment advice. Financial projections are based on publicly available data and author estimates. Actual results may differ materially. Data sources include Circle press releases, SEC filings, analyst reports, and news coverage as of March 24, 2026.</p>
+    </div>
+  </div>
+
+  <!-- SOURCES -->
+  <div class="section">
+    <h2>Sources</h2>
+    <ul class="sources">
+      <li><a href="https://www.coindesk.com/policy/2026/03/23/stablecoin-yield-in-crypto-clarity-act-won-t-allow-rewards-on-balances-latest-text-says">CoinDesk — CLARITY Act won't allow rewards on balances (Mar 23, 2026)</a></li>
+      <li><a href="https://www.cryptotimes.io/2026/03/24/us-clarity-act-targets-stablecoin-yield-allows-activity-based-rewards/">CryptoTimes — US CLARITY Act targets stablecoin yield (Mar 24, 2026)</a></li>
+      <li><a href="https://www.disruptionbanking.com/2026/03/22/clarity-act-unblocked-stablecoin-yield-compromise-reached/">Disruption Banking — Stablecoin yield compromise reached (Mar 22, 2026)</a></li>
+      <li><a href="https://cryptobriefing.com/circle-stock-drops-18-percent-clarity-act-concerns/">CryptoBriefing — Circle stock drops 18% on CLARITY Act (Mar 24, 2026)</a></li>
+      <li><a href="https://www.cryptotimes.io/2026/03/24/circle-stock-crashes-18-after-clarity-act-leak-targets-stablecoin-yield/">CryptoTimes — Circle stock crashes 18% (Mar 24, 2026)</a></li>
+      <li><a href="https://www.businesswire.com/news/home/20260225882643/en/Circle-Reports-Fourth-Quarter-and-Full-Fiscal-Year-2025-Financial-Results">BusinessWire — Circle FY2025 Financial Results (Feb 25, 2026)</a></li>
+      <li><a href="https://coinmetrics.io/state-of-the-network/circle-goes-public-valuation-and-economics-usdc/">Coin Metrics — Circle Goes Public: Valuation & Economics of USDC</a></li>
+      <li><a href="https://perkinscoie.com/insights/update/stablecoin-interest-yield-and-rewards-occ-proposes-sweeping-regulations-under">Perkins Coie — OCC Stablecoin Regulations Under GENIUS Act</a></li>
+      <li><a href="https://coincentral.com/circle-internet-crcl-stock-what-analysts-are-saying-in-march-2026/">CoinCentral — CRCL Analyst Coverage (Mar 2026)</a></li>
+      <li><a href="https://www.federalreserve.gov/monetarypolicy/fomcprojtabl20260318.htm">Federal Reserve — FOMC Projections (Mar 18, 2026)</a></li>
+      <li><a href="https://coinlaw.io/usd-coin-statistics/">CoinLaw — USD Coin Statistics 2026</a></li>
+    </ul>
+  </div>
+
+</div>
+
+<div class="report-footer">
+  <div class="container">
+    <p>Prepared March 24, 2026 11:00 AM ET &bull; Data as of market close March 23 and intraday March 24, 2026</p>
+    <p>Analysis generated for informational purposes only. Not investment advice.</p>
+  </div>
+</div>
+
+<script>
+// Revenue Composition Pie
+new Chart(document.getElementById('revenueChart'), {
+  type: 'doughnut',
+  data: {
+    labels: ['Reserve Income', 'Other Revenue'],
+    datasets: [{
+      data: [2637, 110],
+      backgroundColor: ['#2c3e50', '#3498db'],
+      borderWidth: 0
+    }]
+  },
+  options: {
+    responsive: true,
+    plugins: {
+      legend: { position: 'bottom', labels: { font: { size: 12 } } },
+      tooltip: { callbacks: { label: ctx => `${ctx.label}: $${ctx.raw.toLocaleString()}M (${(ctx.raw/2747*100).toFixed(1)}%)` } }
+    }
+  }
+});
+
+// Revenue Waterfall
+new Chart(document.getElementById('waterfallChart'), {
+  type: 'bar',
+  data: {
+    labels: ['Gross Revenue', 'Distribution', 'Net Revenue', 'OpEx', 'Net Income'],
+    datasets: [
+      {
+        label: 'Base',
+        data: [0, 1085, 0, 615, 0],
+        backgroundColor: 'transparent',
+        borderWidth: 0
+      },
+      {
+        label: 'Value',
+        data: [2747, -1662, 1085, -1155, -70],
+        backgroundColor: ctx => {
+          const vals = [2747, -1662, 1085, -1155, -70];
+          return vals[ctx.dataIndex] >= 0 ? '#27ae60' : '#e74c3c';
+        },
+        borderWidth: 0
+      }
+    ]
+  },
+  options: {
+    responsive: true,
+    plugins: {
+      legend: { display: false },
+      tooltip: {
+        callbacks: { label: ctx => ctx.datasetIndex === 1 ? `$${Math.abs(ctx.raw).toLocaleString()}M` : '' }
+      }
+    },
+    scales: {
+      x: { stacked: true, grid: { display: false } },
+      y: { stacked: true, ticks: { callback: v => `$${(v/1000).toFixed(1)}B` }, grid: { color: '#eee' } }
+    }
+  }
+});
+
+// Scenario Net Income
+new Chart(document.getElementById('scenarioIncomeChart'), {
+  type: 'bar',
+  data: {
+    labels: ['Bull', 'Base', 'Bear'],
+    datasets: [{
+      data: [656, 401, 249],
+      backgroundColor: ['#27ae60', '#f39c12', '#e74c3c'],
+      borderRadius: 4
+    }]
+  },
+  options: {
+    responsive: true,
+    plugins: {
+      legend: { display: false },
+      tooltip: { callbacks: { label: ctx => `$${ctx.raw}M` } }
+    },
+    scales: {
+      y: { beginAtZero: true, ticks: { callback: v => `$${v}M` }, grid: { color: '#eee' } },
+      x: { grid: { display: false } }
+    }
+  }
+});
+
+// USDC Growth Trajectory
+new Chart(document.getElementById('usdcGrowthChart'), {
+  type: 'line',
+  data: {
+    labels: ['2023', '2024', 'FY2025', 'FY2026E Bull', 'FY2026E Base', 'FY2026E Bear'],
+    datasets: [
+      {
+        label: 'Bull',
+        data: [24, 44, 75, 130, null, null],
+        borderColor: '#27ae60',
+        backgroundColor: 'rgba(39,174,96,0.1)',
+        tension: 0.3,
+        pointRadius: 4
+      },
+      {
+        label: 'Base',
+        data: [24, 44, 75, null, 100, null],
+        borderColor: '#f39c12',
+        backgroundColor: 'rgba(243,156,18,0.1)',
+        tension: 0.3,
+        pointRadius: 4
+      },
+      {
+        label: 'Bear',
+        data: [24, 44, 75, null, null, 84],
+        borderColor: '#e74c3c',
+        backgroundColor: 'rgba(231,76,60,0.1)',
+        tension: 0.3,
+        pointRadius: 4
+      }
+    ]
+  },
+  options: {
+    responsive: true,
+    plugins: { legend: { position: 'bottom', labels: { font: { size: 11 } } } },
+    scales: {
+      y: { beginAtZero: true, ticks: { callback: v => `$${v}B` }, grid: { color: '#eee' } },
+      x: { grid: { display: false } }
+    }
+  }
+});
+
+// Sensitivity Chart
+new Chart(document.getElementById('sensitivityChart'), {
+  type: 'line',
+  data: {
+    labels: ['$60B', '$75B', '$87B', '$100B', '$120B'],
+    datasets: [
+      {
+        label: 'Yield 3.0%',
+        data: [1800, 2250, 2610, 3000, 3600],
+        borderColor: '#e74c3c',
+        tension: 0.3,
+        pointRadius: 3
+      },
+      {
+        label: 'Yield 3.5%',
+        data: [2100, 2625, 3045, 3500, 4200],
+        borderColor: '#f39c12',
+        tension: 0.3,
+        pointRadius: 3
+      },
+      {
+        label: 'Yield 4.0%',
+        data: [2400, 3000, 3480, 4000, 4800],
+        borderColor: '#27ae60',
+        tension: 0.3,
+        pointRadius: 3
+      },
+      {
+        label: 'Yield 4.5%',
+        data: [2700, 3375, 3915, 4500, 5400],
+        borderColor: '#2980b9',
+        tension: 0.3,
+        pointRadius: 3
+      }
+    ]
+  },
+  options: {
+    responsive: true,
+    plugins: {
+      title: { display: true, text: 'Gross Reserve Income ($M) by USDC Circulation & Yield', font: { size: 14 } },
+      legend: { position: 'bottom', labels: { font: { size: 11 } } }
+    },
+    scales: {
+      y: { ticks: { callback: v => `$${(v/1000).toFixed(1)}B` }, grid: { color: '#eee' } },
+      x: { title: { display: true, text: 'Avg USDC in Circulation' }, grid: { display: false } }
+    }
+  }
+});
+</script>
+
+</body>
+</html>

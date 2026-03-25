@@ -918,6 +918,48 @@ img {
 .report-card:nth-child(4)::before { background: radial-gradient(ellipse at 30% 50%, var(--matcha-glow) 0%, transparent 60%); }
 .report-card:nth-child(4):hover { border-color: rgba(122, 184, 122, 0.2); }
 
+/* Language toggle on report cards */
+.report-lang-toggle {
+    position: absolute;
+    top: 16px;
+    right: 110px;
+    display: flex;
+    gap: 0;
+    border-radius: 100px;
+    overflow: hidden;
+    border: 1px solid var(--border-color);
+    z-index: 2;
+}
+
+.lang-btn {
+    padding: 3px 12px;
+    font-size: 0.65rem;
+    font-weight: 600;
+    font-family: var(--font-main);
+    background: var(--bg-glass);
+    border: none;
+    color: var(--text-muted);
+    cursor: pointer;
+    transition: var(--transition);
+    letter-spacing: 0.03em;
+}
+
+.lang-btn:hover {
+    color: var(--text-secondary);
+    background: var(--bg-glass-hover);
+}
+
+.lang-btn.active {
+    background: linear-gradient(135deg, var(--matcha) 0%, var(--matcha-dark) 100%);
+    color: white;
+}
+
+.report-link {
+    display: inline;
+    position: relative;
+    z-index: 2;
+}
+
 .report-badge {
     position: absolute;
     top: 16px;
@@ -1293,6 +1335,13 @@ img {
         position: static;
         display: inline-block;
         margin-bottom: 12px;
+    }
+
+    .report-lang-toggle {
+        position: static;
+        display: inline-flex;
+        margin-bottom: 12px;
+        margin-left: 8px;
     }
 
     .section {
