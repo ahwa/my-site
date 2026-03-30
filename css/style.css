@@ -1049,6 +1049,132 @@ img {
 }
 
 /* ============================================
+   EXPERIMENTS
+   ============================================ */
+.page-header-experiments {
+    background: linear-gradient(135deg, var(--bg-secondary) 0%, #1f2428 100%);
+}
+
+.experiments-grid {
+    display: grid;
+    grid-template-columns: repeat(1, 1fr);
+    gap: 16px;
+}
+
+.experiment-card {
+    background: var(--bg-glass);
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
+    border: 1px solid var(--bg-card-border);
+    border-radius: var(--radius-md);
+    padding: 28px;
+    cursor: pointer;
+    position: relative;
+    overflow: hidden;
+    transition: var(--transition-slow);
+    display: block;
+}
+
+.experiment-card::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    opacity: 0;
+    transition: opacity var(--transition-slow);
+    pointer-events: none;
+    border-radius: inherit;
+    background: radial-gradient(ellipse at 30% 50%, var(--lilac-glow) 0%, transparent 60%);
+}
+
+.experiment-card:hover {
+    border-color: rgba(184, 169, 232, 0.2);
+    background: var(--bg-glass-hover);
+    transform: translateY(-4px) scale(1.005);
+    box-shadow: 0 12px 40px rgba(0, 0, 0, 0.3);
+}
+
+.experiment-card:hover::before {
+    opacity: 1;
+}
+
+.experiment-card:nth-child(2)::before { background: radial-gradient(ellipse at 60% 50%, var(--matcha-glow) 0%, transparent 60%); }
+.experiment-card:nth-child(2):hover { border-color: rgba(122, 184, 122, 0.2); }
+.experiment-card:nth-child(3)::before { background: radial-gradient(ellipse at 80% 50%, var(--peach-glow) 0%, transparent 60%); }
+.experiment-card:nth-child(3):hover { border-color: rgba(244, 165, 131, 0.2); }
+
+.experiment-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 14px;
+}
+
+.experiment-badge {
+    font-size: 0.6rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    padding: 4px 10px;
+    border-radius: 100px;
+    background: rgba(255, 255, 255, 0.04);
+    color: var(--text-muted);
+    border: 1px solid var(--border-color);
+    transition: var(--transition-slow);
+}
+
+.experiment-card:hover .experiment-badge {
+    color: var(--lilac);
+    border-color: rgba(184, 169, 232, 0.25);
+    background: var(--lilac-glow);
+}
+
+.experiment-card:nth-child(2):hover .experiment-badge { color: var(--matcha); border-color: rgba(122, 184, 122, 0.25); background: var(--matcha-glow); }
+.experiment-card:nth-child(3):hover .experiment-badge { color: var(--peach); border-color: rgba(244, 165, 131, 0.25); background: var(--peach-glow); }
+
+.experiment-date {
+    font-size: 0.75rem;
+    color: var(--text-muted);
+    font-family: var(--font-mono);
+}
+
+.experiment-title {
+    font-size: 1.2rem;
+    font-weight: 600;
+    margin-bottom: 8px;
+    line-height: 1.35;
+}
+
+.experiment-excerpt {
+    font-size: 0.85rem;
+    color: var(--text-secondary);
+    line-height: 1.6;
+    margin-bottom: 16px;
+}
+
+.experiment-meta {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.experiment-agents {
+    font-size: 0.75rem;
+    color: var(--text-muted);
+    font-family: var(--font-mono);
+}
+
+.experiment-cta {
+    font-size: 0.8rem;
+    font-weight: 500;
+    color: var(--text-muted);
+    transition: color var(--transition-slow);
+}
+
+.experiment-card:hover .experiment-cta {
+    color: var(--text-primary);
+}
+
+/* ============================================
    GALLERY
    ============================================ */
 .gallery-grid {

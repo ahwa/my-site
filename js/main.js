@@ -70,7 +70,7 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }, observerOptions);
 
-    document.querySelectorAll('.info-card, .article-card, .report-card, .preview-card, .gallery-item').forEach(el => {
+    document.querySelectorAll('.info-card, .article-card, .report-card, .experiment-card, .preview-card, .gallery-item').forEach(el => {
         el.style.opacity = '0';
         el.style.transform = 'translateY(20px)';
         el.style.transition = 'opacity 0.5s ease, transform 0.5s ease';
